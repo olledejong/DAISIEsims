@@ -1,0 +1,13 @@
+Package: DAISIEsims
+Type: Package
+Title: Sub-package of DAISIE that is specificly responsible for performing model simulations.
+Version: 1.0
+Date: 2023-09-04
+Author: Olle de Jong
+Maintainer: Olle de Jong <o.de.jong.4@student.rug.nl>
+Description: Allows for performing DAISIE model simulations.
+License: GPL (>= 2)
+Encoding: UTF-8
+Imports: Rcpp (>= 1.0.11)
+LinkingTo: Rcpp
+RoxygenNote: 7.2.3
