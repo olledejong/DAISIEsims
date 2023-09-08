@@ -4,6 +4,5 @@ using namespace Rcpp;
 
 // [[Rcpp::export]]
 String hello_world() {
-
     return "Hello World!";
 }

@@ -1,6 +1,6 @@
 Package: DAISIEsims
 Type: Package
-Title: Sub-package of DAISIE that is specificly responsible for performing model simulations.
+Title: Sub-package of DAISIE that is specificly responsible for performing model simulations
 Version: 1.0
 Date: 2023-09-04
 Author: Olle de Jong
