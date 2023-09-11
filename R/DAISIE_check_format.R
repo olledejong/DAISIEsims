@@ -34,6 +34,36 @@ are_rates <- function(rates) {
 }
 
 
+#' Measures if the input is a valid collection of simulation
+#' outputs.
+#'
+#' @inheritParams default_params_doc
+#'
+#' @return TRUE if the input is a valid collection of simulation
+#' outputs.
+#' @author Richel J.C Bilderbeek, Pedro Neves
+#' @noRd
+is_simulation_outputs <- function(simulation_outputs) {
+  for (n_replicate in seq_along(simulation_outputs)) {
+    if (!"island_age" %in% names(simulation_outputs[[n_replicate]][[1]]))
+      return(FALSE)
+    if (!(names(simulation_outputs[[n_replicate]][[1]])[2] %in%
+          c("not_present","not_present_type1"))) {
+      return(FALSE)
+    }
+    if (!"stt_all" %in% names(simulation_outputs[[n_replicate]][[1]]))
+      return(FALSE)
+    # TODO: Figure out how to test this?
+    # if (!"branching_times" %in% names(simulation_outputs)) return(FALSE)
+    # if (!"stac" %in% names(simulation_outputs)) return(FALSE)
+    # if (!"missing_species" %in% names(simulation_outputs)) return(FALSE)
+  }
+  if (is.list(simulation_outputs) && length(simulation_outputs) >= 1) {
+    return(TRUE)
+  }
+}
+
+
 #' Test if list has area parameters
 #'
 #' @inheritParams default_params_doc

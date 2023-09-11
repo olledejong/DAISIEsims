@@ -11,7 +11,7 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // update_rates_cpp
-std::list<double> update_rates_cpp();
+std::vector<double> update_rates_cpp();
 RcppExport SEXP _DAISIEsims_update_rates_cpp() {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;

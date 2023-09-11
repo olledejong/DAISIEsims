@@ -1,6 +1,8 @@
 #' Internal function of the DAISIE simulation
 #'
+#' @rawNamespace importFrom(Rcpp, evalCpp)
 #' @inheritParams default_params_doc
+#' @export
 DAISIE_sim_core_cr <- function(
     time,
     mainland_n,
@@ -52,7 +54,7 @@ DAISIE_sim_core_cr <- function(
 
   #### Start Monte Carlo iterations ####
   while (timeval < total_time) {
-    rates <- update_rates_cpp();
+    rates <- update_rates_cpp()
     # print(rates)
     rates <- update_rates(
       timeval = timeval,
