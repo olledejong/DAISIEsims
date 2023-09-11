@@ -8,7 +8,7 @@ Maintainer: Olle de Jong <o.de.jong.4@student.rug.nl>
 Description: Package used as environment to develop Rcpp equivalents of existing R functions
 License: GPL (>= 2)
 Encoding: UTF-8
-Depends: Rcpp
+Imports: Rcpp (>= 1.0.11)
+Suggests: testthat
 LinkingTo: Rcpp
-LazyData: true
 RoxygenNote: 7.2.3
