@@ -10,19 +10,19 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// hello_world
-String hello_world();
-RcppExport SEXP _DAISIEsims_hello_world() {
+// update_rates_cpp
+std::list<double> update_rates_cpp();
+RcppExport SEXP _DAISIEsims_update_rates_cpp() {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(hello_world());
+    rcpp_result_gen = Rcpp::wrap(update_rates_cpp());
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_DAISIEsims_hello_world", (DL_FUNC) &_DAISIEsims_hello_world, 0},
+    {"_DAISIEsims_update_rates_cpp", (DL_FUNC) &_DAISIEsims_update_rates_cpp, 0},
     {NULL, NULL, 0}
 };
 
