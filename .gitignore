@@ -2,6 +2,7 @@
 .Rproj.user
 .RData
 .DS_Store
+Rplots.pdf
 
 src/*.o
 src/*.dll
