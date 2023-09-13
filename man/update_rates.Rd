@@ -128,7 +128,8 @@ Other rate calculations:
 \code{\link{get_ana_rate}()},
 \code{\link{get_ext_rate}()},
 \code{\link{get_immig_rate}()},
-\code{\link{island_area}()}
+\code{\link{island_area}()},
+\code{\link{update_rates_cpp}()}
 }
 \concept{rate calculations}
 \keyword{internal}

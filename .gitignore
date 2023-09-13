@@ -1,6 +1,9 @@
 .Rhistory
 .Rproj.user
 .RData
+.DS_Store
 
 src/*.o
 src/*.dll
+
+.vscode

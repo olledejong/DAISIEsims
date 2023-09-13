@@ -60,6 +60,7 @@ Other rate calculations:
 \code{\link{get_ana_rate}()},
 \code{\link{get_ext_rate}()},
 \code{\link{island_area}()},
+\code{\link{update_rates_cpp}()},
 \code{\link{update_rates}()}
 }
 \author{

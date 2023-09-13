@@ -44,31 +44,29 @@ update_rates <- function(timeval,
   # testit::assert(is.numeric(mainland_n))
   # testit::assert(is.numeric(sea_level))
 
-  # At this moment we only take trait_pars == NULL into account
-  #
-  # if (!is.null(trait_pars)) { Not being implemented yet
-  #   return(
-  #     update_rates_trait(
-  #       timeval = timeval,
-  #       total_time = total_time,
-  #       gam = gam,
-  #       mu = mu,
-  #       laa = laa,
-  #       lac = lac,
-  #       hyper_pars = hyper_pars,
-  #       area_pars = area_pars,
-  #       island_ontogeny = island_ontogeny,
-  #       sea_level = sea_level,
-  #       extcutoff = extcutoff,
-  #       K = K,
-  #       mainland_n = mainland_n,
-  #       num_spec = num_spec,
-  #       num_immigrants = num_immigrants,
-  #       trait_pars = trait_pars,
-  #       island_spec = island_spec
-  #     )
-  #   )
-  # }
+  if (!is.null(trait_pars)) {
+    return(
+      update_rates_trait(
+        timeval = timeval,
+        total_time = total_time,
+        gam = gam,
+        mu = mu,
+        laa = laa,
+        lac = lac,
+        hyper_pars = hyper_pars,
+        area_pars = area_pars,
+        island_ontogeny = island_ontogeny,
+        sea_level = sea_level,
+        extcutoff = extcutoff,
+        K = K,
+        mainland_n = mainland_n,
+        num_spec = num_spec,
+        num_immigrants = num_immigrants,
+        trait_pars = trait_pars,
+        island_spec = island_spec
+      )
+    )
+  }
 
   A <- island_area(
     timeval = timeval,
@@ -225,33 +223,32 @@ get_immig_rate <- function(gam,
     # testit::assert(immig_rate >= 0)
     return(immig_rate)
   }
-  # At this moment we only take trait_pars == NULL into account
-  #
-  # else {
-  #   mainland_n2 <- trait_pars$M2
-  #   gam2 <- trait_pars$immig_rate2
-  #   num_spec_trait1 <- length(which(island_spec[, 8] == "1"))
-  #   num_spec_trait2 <- length(which(island_spec[, 8] == "2"))
-  #   if ("K2" %in% names(trait_pars)) {
-  #     immig_rate1 <- max(c(mainland_n * gam * (1 - (num_spec_trait1 / K)),
-  #                          0), na.rm = TRUE)
-  #     immig_rate2 <- max(c(mainland_n2 * gam2 * (1 - (num_spec_trait2 / trait_pars$K2)),
-  #                          0), na.rm = TRUE)
-  #   } else {
-  #     immig_rate1 <- max(c(mainland_n * gam * (1 - (num_spec / K)),
-  #                          0), na.rm = TRUE)
-  #     immig_rate2 <- max(c(mainland_n2 * gam2 * (1 - (num_spec / K)),
-  #                          0), na.rm = TRUE)
-  #   }
-  #
-  #   # testit::assert(is.numeric(immig_rate1))
-  #   # testit::assert(immig_rate1 >= 0)
-  #   # testit::assert(is.numeric(immig_rate2))
-  #   # testit::assert(immig_rate2 >= 0)
-  #   immig_list <- list(immig_rate1 = immig_rate1,
-  #                      immig_rate2 = immig_rate2)
-  #   return(immig_list)
-  # }
+
+  else {
+    mainland_n2 <- trait_pars$M2
+    gam2 <- trait_pars$immig_rate2
+    num_spec_trait1 <- length(which(island_spec[, 8] == "1"))
+    num_spec_trait2 <- length(which(island_spec[, 8] == "2"))
+    if ("K2" %in% names(trait_pars)) {
+      immig_rate1 <- max(c(mainland_n * gam * (1 - (num_spec_trait1 / K)),
+                           0), na.rm = TRUE)
+      immig_rate2 <- max(c(mainland_n2 * gam2 * (1 - (num_spec_trait2 / trait_pars$K2)),
+                           0), na.rm = TRUE)
+    } else {
+      immig_rate1 <- max(c(mainland_n * gam * (1 - (num_spec / K)),
+                           0), na.rm = TRUE)
+      immig_rate2 <- max(c(mainland_n2 * gam2 * (1 - (num_spec / K)),
+                           0), na.rm = TRUE)
+    }
+
+    # testit::assert(is.numeric(immig_rate1))
+    # testit::assert(immig_rate1 >= 0)
+    # testit::assert(is.numeric(immig_rate2))
+    # testit::assert(immig_rate2 >= 0)
+    immig_list <- list(immig_rate1 = immig_rate1,
+                       immig_rate2 = immig_rate2)
+    return(immig_list)
+  }
 }
 
 
@@ -291,23 +288,22 @@ get_ext_rate <- function(mu,
     # testit::assert(ext_rate >= 0)
     return(ext_rate)
   }
-  # At this moment we only take trait_pars == NULL into account
-  #
-  # else {   ##species have two states
-  #   if (is.matrix(island_spec) || is.null(island_spec)) {
-  #     num_spec_trait1 <- length(which(island_spec[, 8] == "1"))
-  #     num_spec_trait2 <- length(which(island_spec[, 8] == "2"))
-  #   }
-  #   ext_rate1 <- mu * num_spec_trait1
-  #   ext_rate2 <- trait_pars$ext_rate2 * num_spec_trait2
-  #   # testit::assert(is.numeric(ext_rate1))
-  #   # testit::assert(is.numeric(ext_rate2))
-  #   # testit::assert(ext_rate1 >= 0)
-  #   # testit::assert(ext_rate2 >= 0)
-  #   ext_list <- list(ext_rate1 = ext_rate1,
-  #                    ext_rate2 = ext_rate2)
-  #   return(ext_list)
-  # }
+
+  else {
+    if (is.matrix(island_spec) || is.null(island_spec)) {
+      num_spec_trait1 <- length(which(island_spec[, 8] == "1"))
+      num_spec_trait2 <- length(which(island_spec[, 8] == "2"))
+    }
+    ext_rate1 <- mu * num_spec_trait1
+    ext_rate2 <- trait_pars$ext_rate2 * num_spec_trait2
+    # testit::assert(is.numeric(ext_rate1))
+    # testit::assert(is.numeric(ext_rate2))
+    # testit::assert(ext_rate1 >= 0)
+    # testit::assert(ext_rate2 >= 0)
+    ext_list <- list(ext_rate1 = ext_rate1,
+                     ext_rate2 = ext_rate2)
+    return(ext_list)
+  }
 }
 
 
@@ -333,24 +329,23 @@ get_ana_rate <- function(laa,
     # testit::assert(ana_rate >= 0)
     return(ana_rate)
   }
-  # At this moment we only take trait_pars == NULL into account
-  #
-  # else {
-  #   ana_rate1 = laa * length(intersect(which(island_spec[,4] == "I"),
-  #                                      which(island_spec[,8] == "1")))
-  #   ana_rate2 = trait_pars$ana_rate2 * length(
-  #     intersect(which(island_spec[,4] == "I"),
-  #               which(island_spec[,8] == "2"))
-  #   )
-  #
-  #   # testit::assert(is.numeric(ana_rate1))
-  #   # testit::assert(ana_rate1 >= 0)
-  #   # testit::assert(is.numeric(ana_rate2))
-  #   # testit::assert(ana_rate2 >= 0)
-  #   ana_list <- list(ana_rate1 = ana_rate1,
-  #                    ana_rate2 = ana_rate2)
-  #   return(ana_list)
-  # }
+
+  else {
+    ana_rate1 = laa * length(intersect(which(island_spec[,4] == "I"),
+                                       which(island_spec[,8] == "1")))
+    ana_rate2 = trait_pars$ana_rate2 * length(
+      intersect(which(island_spec[,4] == "I"),
+                which(island_spec[,8] == "2"))
+    )
+
+    # testit::assert(is.numeric(ana_rate1))
+    # testit::assert(ana_rate1 >= 0)
+    # testit::assert(is.numeric(ana_rate2))
+    # testit::assert(ana_rate2 >= 0)
+    ana_list <- list(ana_rate1 = ana_rate1,
+                     ana_rate2 = ana_rate2)
+    return(ana_list)
+  }
 }
 
 

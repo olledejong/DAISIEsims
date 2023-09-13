@@ -1,14 +1,279 @@
 #include <iostream>
 #include <vector>
 #include <list>
+#include <math.h>
+#include <algorithm>
 
 #include <Rcpp.h>
 using namespace Rcpp;
+using namespace std;
 
-//' Test function
+//' Calculates the area at a point in time from a beta function
+//'
+//' @inheritParams default_params_doc
+//'
+//' @keywords internal
+//'
+//' @author Joshua Lambert, Pedro Neves, Shu Xie
+//'
+//' @return Numeric
+double calc_Abeta(
+	double proptime,
+	double proptime_max,
+	int peak,
+	double Amax)
+{
+	double f = proptime_max / (1 - proptime_max);
+	double a = f * peak / (1 + f);
+	double b = peak / (1 + f);
+	double At = Amax * pow(proptime, a) * pow(1 - proptime, b) / (pow(a / (a + b), a) * pow(b / (a + b), b));
+
+	return At;
+}
+
+//' Function to describe changes in area through time.
+//'
+//' @inheritParams default_params_doc
+//'
+//' @keywords internal
+//' @family rate calculations
+//' @author Pedro Neves, Joshua Lambert
+//' @references
+//' Valente, Luis M., Rampal S. Etienne, and Albert B. Phillimore.
+//' "The effects of island ontogeny on species diversity and phylogeny."
+//' Proceedings of the Royal Society of London B: Biological
+//' Sciences 281.1784 (2014): 20133227.
+double island_area(
+	int timeval,
+	int total_time,
+	List area_pars,
+	int peak,
+	int island_ontogeny,
+	int sea_level)
+{
+
+	int Tmax = area_pars["total_island_age"];
+	double Amax = area_pars["max_area"];
+	double Acurr = area_pars["current_area"];
+	double proptime_max = area_pars["proportional_peak_t"];
+	double ampl = area_pars["sea_level_amplitude"];
+	double freq = area_pars["sea_level_frequency"];
+	double theta = area_pars["island_gradient_angle"];
+
+	// Constant ontogeny and sea-level
+	if (island_ontogeny == 0 && sea_level == 0) { return 1; }
+
+	// NOTE In all regular (non time-dep) versions of sim_core, island_ontogeny and sea_level always 0, and
+	// NOTE therefore the island_area is always set to 1. 
+
+	// NOTE In the original R code, the 'proptime' is calculate immediately after extracting of area_pars. In the
+	// NOTE very first timestep, in the case of island_ontogeny and sea_level being 0, this results in a divide
+	// NOTE by zero error. In R this results in a NaN value, which does not result in exceptions in R since the 
+	// NOTE 'proptime' value is not used ( island_area stays constant (1) ). 
+	
+	// NOTE It does, however, result in a 'divide by zero' exception in C++, calling for different handling 
+	// NOTE For now, we moved the instantiation of 'proptime' to below the above mentioned case ( constant area )
+
+	double proptime = timeval / Tmax; // Returns NaN in R when both are 0 at the very first time-step
+	double proptime_curr = total_time / Tmax;
+	double theta_scaled = theta * ( M_PI / 180 );
+
+	// Beta function ontogeny and constant sea-level
+	if (island_ontogeny == 1 && sea_level == 0)
+	{
+		double At = calc_Abeta(proptime, proptime_max, peak, Amax);
+		return At;
+	}
+
+	if (island_ontogeny == 0 && sea_level == 1)
+	{
+		double angular_freq = 2 * M_PI * freq;
+		double delta_sl = ampl * cos((proptime_curr - proptime) * angular_freq);
+		double r_curr = sqrt((Acurr / M_PI));
+		double h_curr = tan(theta_scaled) * r_curr;
+		double h_delta = max(0.0, h_curr - ampl + delta_sl);
+		double At = M_PI * pow(h_delta / tan(theta_scaled), 2);
+		return At;
+	}
+
+	if (island_ontogeny == 1 && sea_level == 1)
+	{
+		double A_beta = calc_Abeta(proptime, proptime_max, peak, Amax);
+
+		double angular_freq = 2 * M_PI * freq;
+		double delta_sl = ampl * cos((proptime_curr - proptime) * angular_freq);
+		double r_curr = sqrt((A_beta / M_PI));
+		double h_curr = tan(theta_scaled) * r_curr;
+		double h_delta = max(0.0, h_curr - ampl + delta_sl);
+		double At = M_PI * pow(h_delta / tan(theta_scaled), 2);
+
+		return At;
+	}
+}
+
+//' Calculate immigration rate
+//' @description Internal function.
+//' Calculates the immigration rate given the current number of
+//' species in the system, the carrying capacity
+//'
+//' @inheritParams default_params_doc
+//'
+//' @keywords internal
+//' @family rate calculations
+//' @author Pedro Neves, Joshua Lambert
+//' @references Valente, Luis M., Rampal S. Etienne, and Albert B. Phillimore.
+//' "The effects of island ontogeny on species diversity and phylogeny."
+//' Proceedings of the Royal Society of London B: Biological Sciences 281.1784 (2014): 20133227.
+double get_immig_rate(
+	double gam, 
+	double A, 
+	int num_spec, 
+	double K, 
+	int mainland_n)
+{
+	
+	return 0.2;
+}
+
+
+//' Calculate extinction rate
+//'
+//' @inheritParams default_params_doc
+//'
+//' @return A numeric, with the extinction rate given the base extinction rate,
+//' if present, the hyperparemeter \code{x}, A(t) if time-dependent and traits
+//' if running a traint model.
+//'
+//' @keywords internal
+//' @family rate calculations
+//' @references Valente, Luis M., Rampal S. Etienne, and Albert B. Phillimore.
+//' "The effects of island ontogeny on species diversity and phylogeny."
+//' Proceedings of the Royal Society of London B: Biological Sciences 281.1784
+//' (2014): 20133227.
+//' @author Pedro Neves, Joshua Lambert, Shu Xie
+double get_ext_rate(
+	double mu,
+	List hyper_pars,
+	int extcutoff,
+	int num_spec,
+	double A)
+{
+
+	return 0.3;
+}
+
+//' Calculate anagenesis rate
+//' @description Internal function.
+//' Calculates the anagenesis rate given the current number of
+//' immigrant species and the per capita rate.
+//'
+//' @inheritParams default_params_doc
+//'
+//' @keywords internal
+//' @family rate calculations
+//' @author Pedro Neves, Joshua Lambert, Shu Xie
+double get_ana_rate(
+	double laa,
+	int num_immigrants)
+{
+
+	return 0.4;
+}
+
+//' Calculate cladogenesis rate
+//' @description Internal function.
+//' Calculates the cladogenesis rate given the current number of
+//' species in the system, the carrying capacity and the per capita cladogenesis
+//' rate
+//'
+//' @inheritParams default_params_doc
+//'
+//' @keywords internal
+//' @author Pedro Neves, Joshua Lambert, Shu Xie
+double get_clado_rate(
+	double lac,
+	List hyper_pars,
+	int num_spec,
+	double K,
+	double A)
+{
+
+	return 0.5;
+}
+
+//' Calculates algorithm rates
+//' @description Internal function that updates the all the rates and
+//' max extinction horizon at time t.
+//' @family rate calculations
+//'
+//' @inheritParams default_params_doc
+//'
+//' @seealso \code{\link{update_max_rates}()}
+//' @keywords internal
+//' @return a named list with the updated effective rates.
 //' @export
 // [[Rcpp::export]]
-std::vector<double> update_rates_cpp() {
-  std::vector<double> test_list{12,45,8,6};
-  return test_list;
+List update_rates_cpp(
+	int timeval,
+	int total_time,
+	double gam,
+	double laa,
+	double lac,
+	double mu,
+	List hyper_pars,
+	List area_pars,
+	double K,
+	int num_spec,
+	int num_immigrants,
+	int mainland_n,
+	int peak = 0,
+	int extcutoff = 0,
+	int island_ontogeny = 0,
+	int sea_level = 0)
+{
+
+	double A = island_area(
+		timeval,
+		total_time,
+		area_pars,
+		peak,
+		island_ontogeny,
+		sea_level);
+	std::cerr << A;
+	// testit::assert(is.numeric(A))
+
+	double immig_rate = get_immig_rate(
+		gam,
+		A,
+		num_spec,
+		K,
+		mainland_n);
+	// testit::assert(is.numeric(immig_rate))
+
+	double ext_rate = get_ext_rate(
+		mu,
+		hyper_pars,
+		extcutoff,
+		num_spec,
+		A);
+	// testit::assert(is.numeric(ext_rate))
+
+	double ana_rate = get_ana_rate(
+		laa,
+		num_immigrants);
+	// testit::assert(is.numeric(ana_rate))
+
+	double clado_rate = get_clado_rate(
+		lac,
+		hyper_pars,
+		num_spec,
+		K,
+		A);
+	// testit::assert(is.numeric(clado_rate))
+
+	return List::create(
+		Named("immig_rate") = immig_rate,
+		Named("ext_rate") = ext_rate,
+		Named("ana_rate") = ana_rate,
+		Named("clado_rate") = clado_rate);
 }
