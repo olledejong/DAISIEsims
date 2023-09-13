@@ -111,6 +111,26 @@ double island_area(
 	}
 }
 
+//' Calculate per-capita immigration rate
+//'
+//' This function is only called directly inside the RHS of the ontogeny
+//' likelihood functions. In all other cases \code{\link{get_immig_rate}()} is to
+//' be called instead.
+//'
+//' @inheritParams default_params_doc
+//'
+//' @return A numeric with the per-capita immigration rate given A(t) and K.
+//' @noRd
+double get_immig_rate_per_capita(
+	double gam,
+	int num_spec,
+	double K,
+	double A)
+{
+	// NOTE function in R uses pmax, but are there at any point more than two values?
+	return max(0.0, gam * (1 - (num_spec / (K * A))));
+}
+
 //' Calculate immigration rate
 //' @description Internal function.
 //' Calculates the immigration rate given the current number of
@@ -126,15 +146,44 @@ double island_area(
 //' Proceedings of the Royal Society of London B: Biological Sciences 281.1784 (2014): 20133227.
 double get_immig_rate(
 	double gam, 
-	double A, 
 	int num_spec, 
 	double K, 
-	int mainland_n)
+	int mainland_n,
+	double A = 1.0,
+	int trait_pars = 0,
+	int island_spec = 0)
 {
-	
-	return 0.2;
+	if (trait_pars == 0) {
+		return mainland_n * get_immig_rate_per_capita(
+			gam,
+			num_spec,
+			K,
+			A
+		);
+	} else {
+		// TODO implement case where trait_pars is not 0 
+	}
 }
 
+//' Function to describe per-capita changes in extinction rate through time
+//'
+//' This function is only called directly inside the RHS of the ontogeny
+//' likelihood functions. In all other cases \code{\link{get_ext_rate}()} is to
+//' be called instead.
+//'
+//' @inheritParams default_params_doc
+//'
+//' @return Numeric with per capita extinction rate, given A(t), x, and mu0.
+//' @noRd
+double get_ext_rate_per_capita(
+	double mu,
+	int x,
+	int extcutoff = 1000,
+	double A = 1.0) 
+{
+	double ext_rate_pc = max(0.0, mu * (pow( A, -x )));
+	return min(ext_rate_pc, (double) extcutoff);
+}
 
 //' Calculate extinction rate
 //'
@@ -154,12 +203,24 @@ double get_immig_rate(
 double get_ext_rate(
 	double mu,
 	List hyper_pars,
-	int extcutoff,
 	int num_spec,
-	double A)
+	double A = 1.0,
+	int extcutoff = 1000,
+	int trait_pars = 0,
+	int island_spec = 0)
 {
-
-	return 0.3;
+	int x = hyper_pars["x"];
+	if (trait_pars == 0) {
+		double ext_rate_pc = num_spec * get_ext_rate_per_capita(
+			mu,
+			x,
+			extcutoff,
+			A
+		);
+		return min(ext_rate_pc, (double) extcutoff);
+	} else {
+		// TODO implement case where trait_pars is not 0
+	}
 }
 
 //' Calculate anagenesis rate
@@ -174,10 +235,37 @@ double get_ext_rate(
 //' @author Pedro Neves, Joshua Lambert, Shu Xie
 double get_ana_rate(
 	double laa,
-	int num_immigrants)
+	int num_immigrants,
+	int island_spec = 0,
+	int trait_pars = 0)
 {
+	if (trait_pars == 0) {
+		return laa * num_immigrants;;
+	} else {
+		// TODO implement case where trait_pars is not 0
+	}
+}
 
-	return 0.4;
+//' Calculate per-capita cladogenesis rate
+//'
+//' This function is only called directly inside the RHS of the ontogeny
+//' likelihood functions. In all other cases \code{\link{get_clado_rate}()} is to
+//' be called instead.
+//'
+//' @inheritParams default_params_doc
+//'
+//' @return Numeric with the per-capita cladogenesis rate given a base
+//' cladogenesis rate, K, A and the d hyperparameter.
+//' @noRd
+double get_clado_rate_per_capita(
+	double lac,
+	int d,
+	int num_spec,
+	double K,
+	double A = 1.0)
+{
+	double caldo_rate_pc = lac * (pow(A, d)) * (1 - num_spec / (K * A));
+	return max(0.0, caldo_rate_pc);
 }
 
 //' Calculate cladogenesis rate
@@ -195,10 +283,23 @@ double get_clado_rate(
 	List hyper_pars,
 	int num_spec,
 	double K,
-	double A)
+	double A,
+	int trait_pars = 0,
+	int island_spec = 0)
 {
+	int d = hyper_pars["d"];
 
-	return 0.5;
+	if (trait_pars == 0) {
+		return num_spec * get_clado_rate_per_capita(
+			lac,
+			d,
+			num_spec,
+			K,
+			A
+		);
+	} else {
+		// TODO implement case where trait_pars is not 0
+	}
 }
 
 //' Calculates algorithm rates
@@ -227,9 +328,8 @@ List update_rates_cpp(
 	int num_immigrants,
 	int mainland_n,
 	int peak = 0,
-	int extcutoff = 0,
 	int island_ontogeny = 0,
-	int sea_level = 0)
+	int sea_level = 0) // NOTE | 'extcutoff' is no longer received here. For now this seems the way to go, might need tweaks later.
 {
 
 	double A = island_area(
@@ -239,21 +339,19 @@ List update_rates_cpp(
 		peak,
 		island_ontogeny,
 		sea_level);
-	std::cerr << A;
 	// testit::assert(is.numeric(A))
 
 	double immig_rate = get_immig_rate(
 		gam,
-		A,
 		num_spec,
 		K,
-		mainland_n);
+		mainland_n,
+		A);
 	// testit::assert(is.numeric(immig_rate))
 
 	double ext_rate = get_ext_rate(
 		mu,
 		hyper_pars,
-		extcutoff,
 		num_spec,
 		A);
 	// testit::assert(is.numeric(ext_rate))
@@ -270,6 +368,7 @@ List update_rates_cpp(
 		K,
 		A);
 	// testit::assert(is.numeric(clado_rate))
+	// std::cerr << "\n" << immig_rate << "\t" << ext_rate << "\t" << ana_rate << "\t" << clado_rate;
 
 	return List::create(
 		Named("immig_rate") = immig_rate,

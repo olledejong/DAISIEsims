@@ -26,6 +26,18 @@ NULL
 #' Sciences 281.1784 (2014): 20133227.
 NULL
 
+#' Calculate per-capita immigration rate
+#'
+#' This function is only called directly inside the RHS of the ontogeny
+#' likelihood functions. In all other cases \code{\link{get_immig_rate}()} is to
+#' be called instead.
+#'
+#' @inheritParams default_params_doc
+#'
+#' @return A numeric with the per-capita immigration rate given A(t) and K.
+#' @noRd
+NULL
+
 #' Calculate immigration rate
 #' @description Internal function.
 #' Calculates the immigration rate given the current number of
@@ -39,6 +51,18 @@ NULL
 #' @references Valente, Luis M., Rampal S. Etienne, and Albert B. Phillimore.
 #' "The effects of island ontogeny on species diversity and phylogeny."
 #' Proceedings of the Royal Society of London B: Biological Sciences 281.1784 (2014): 20133227.
+NULL
+
+#' Function to describe per-capita changes in extinction rate through time
+#'
+#' This function is only called directly inside the RHS of the ontogeny
+#' likelihood functions. In all other cases \code{\link{get_ext_rate}()} is to
+#' be called instead.
+#'
+#' @inheritParams default_params_doc
+#'
+#' @return Numeric with per capita extinction rate, given A(t), x, and mu0.
+#' @noRd
 NULL
 
 #' Calculate extinction rate
@@ -70,6 +94,19 @@ NULL
 #' @author Pedro Neves, Joshua Lambert, Shu Xie
 NULL
 
+#' Calculate per-capita cladogenesis rate
+#'
+#' This function is only called directly inside the RHS of the ontogeny
+#' likelihood functions. In all other cases \code{\link{get_clado_rate}()} is to
+#' be called instead.
+#'
+#' @inheritParams default_params_doc
+#'
+#' @return Numeric with the per-capita cladogenesis rate given a base
+#' cladogenesis rate, K, A and the d hyperparameter.
+#' @noRd
+NULL
+
 #' Calculate cladogenesis rate
 #' @description Internal function.
 #' Calculates the cladogenesis rate given the current number of
@@ -93,7 +130,7 @@ NULL
 #' @keywords internal
 #' @return a named list with the updated effective rates.
 #' @export
-update_rates_cpp <- function(timeval, total_time, gam, laa, lac, mu, hyper_pars, area_pars, K, num_spec, num_immigrants, mainland_n, peak = 0L, extcutoff = 0L, island_ontogeny = 0L, sea_level = 0L) {
-    .Call(`_DAISIEsims_update_rates_cpp`, timeval, total_time, gam, laa, lac, mu, hyper_pars, area_pars, K, num_spec, num_immigrants, mainland_n, peak, extcutoff, island_ontogeny, sea_level)
+update_rates_cpp <- function(timeval, total_time, gam, laa, lac, mu, hyper_pars, area_pars, K, num_spec, num_immigrants, mainland_n, peak = 0L, island_ontogeny = 0L, sea_level = 0L) {
+    .Call(`_DAISIEsims_update_rates_cpp`, timeval, total_time, gam, laa, lac, mu, hyper_pars, area_pars, K, num_spec, num_immigrants, mainland_n, peak, island_ontogeny, sea_level)
 }
 

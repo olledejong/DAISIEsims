@@ -18,7 +18,6 @@ update_rates_cpp(
   num_immigrants,
   mainland_n,
   peak = 0L,
-  extcutoff = 0L,
   island_ontogeny = 0L,
   sea_level = 0L
 )
@@ -75,9 +74,6 @@ number of mainland species.}
 ontogeny curve. Higher values imply peakier ontogeny. This value is
 internally calculated by \code{\link{calc_peak}()} given the area at the
 present and the \code{area_pars}.}
-
-\item{extcutoff}{A numeric with the cutoff for the the maximum extinction
-rate preventing it from being too large and slowing down simulation.}
 
 \item{island_ontogeny}{In \code{\link{DAISIE_sim_time_dep}()},
 \code{\link{DAISIE_ML_CS}} and plotting a string describing the type of
