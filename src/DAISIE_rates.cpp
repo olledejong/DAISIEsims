@@ -5,8 +5,6 @@
 #include <algorithm>
 
 #include <Rcpp.h>
-using namespace Rcpp;
-using namespace std;
 
 //' Calculates the area at a point in time from a beta function
 //'
@@ -46,12 +44,11 @@ double calc_Abeta(
 double island_area(
 	int timeval,
 	int total_time,
-	List area_pars,
+	Rcpp::List area_pars,
 	int peak,
 	int island_ontogeny,
 	int sea_level)
 {
-
 	int Tmax = area_pars["total_island_age"];
 	int Amax = area_pars["max_area"];
 	int Acurr = area_pars["current_area"];
@@ -61,27 +58,29 @@ double island_area(
 	int theta = area_pars["island_gradient_angle"];
 
 	// Constant ontogeny and sea-level
-	if (island_ontogeny == 0 && sea_level == 0) {
-		if (Amax != 1) {
-			warning("Constant island area requires a maximum area of 1.");
+	if (island_ontogeny == 0 && sea_level == 0)
+	{
+		if (Amax != 1)
+		{
+			Rcpp::warning("Constant island area requires a maximum area of 1.");
 		}
-		 return 1; 
+		return 1;
 	}
 
 	// NOTE In all regular (non time-dep) versions of sim_core, island_ontogeny and sea_level always 0, and
-	// NOTE therefore the island_area is always set to 1. 
+	// NOTE therefore the island_area is always set to 1.
 
 	// NOTE In the original R code, the 'proptime' is calculate immediately after extracting of area_pars. In the
 	// NOTE very first timestep, in the case of island_ontogeny and sea_level being 0, this results in a divide
-	// NOTE by zero error. In R this results in a NaN value, which does not result in exceptions in R since the 
-	// NOTE 'proptime' value is not used ( island_area stays constant (1) ). 
-	
-	// NOTE It does, however, result in a 'divide by zero' exception in C++, calling for different handling 
+	// NOTE by zero error. In R this results in a NaN value, which does not result in exceptions in R since the
+	// NOTE 'proptime' value is not used ( island_area stays constant (1) ).
+
+	// NOTE It does, however, result in a 'divide by zero' exception in C++, calling for different handling
 	// NOTE For now, we moved the instantiation of 'proptime' to below the above mentioned case ( constant area )
 
 	double proptime = timeval / Tmax; // Returns NaN in R when both are 0 at the very first time-step
 	double proptime_curr = total_time / Tmax;
-	double theta_scaled = theta * ( M_PI / 180 );
+	double theta_scaled = theta * (M_PI / 180);
 
 	// Beta function ontogeny and constant sea-level
 	if (island_ontogeny == 1 && sea_level == 0)
@@ -96,7 +95,7 @@ double island_area(
 		double delta_sl = ampl * cos((proptime_curr - proptime) * angular_freq);
 		double r_curr = sqrt((Acurr / M_PI));
 		double h_curr = tan(theta_scaled) * r_curr;
-		double h_delta = max(0.0, h_curr - ampl + delta_sl);
+		double h_delta = std::max(0.0, h_curr - ampl + delta_sl);
 		double At = M_PI * pow(h_delta / tan(theta_scaled), 2);
 		return At;
 	}
@@ -109,7 +108,7 @@ double island_area(
 		double delta_sl = ampl * cos((proptime_curr - proptime) * angular_freq);
 		double r_curr = sqrt((A_beta / M_PI));
 		double h_curr = tan(theta_scaled) * r_curr;
-		double h_delta = max(0.0, h_curr - ampl + delta_sl);
+		double h_delta = std::max(0.0, h_curr - ampl + delta_sl);
 		double At = M_PI * pow(h_delta / tan(theta_scaled), 2);
 
 		return At;
@@ -133,7 +132,7 @@ double get_immig_rate_per_capita(
 	double A)
 {
 	// NOTE function in R uses pmax, but are there at any point more than two values?
-	return max(0.0, gam * (1 - (num_spec / (K * A))));
+	return std::max(0.0, gam * (1 - (num_spec / (K * A))));
 }
 
 //' Calculate immigration rate
@@ -150,23 +149,25 @@ double get_immig_rate_per_capita(
 //' "The effects of island ontogeny on species diversity and phylogeny."
 //' Proceedings of the Royal Society of London B: Biological Sciences 281.1784 (2014): 20133227.
 double get_immig_rate(
-	double gam, 
-	int num_spec, 
-	double K, 
+	double gam,
+	int num_spec,
+	double K,
 	int mainland_n,
 	double A = 1.0,
 	int trait_pars = 0,
 	int island_spec = 0)
 {
-	if (trait_pars == 0) {
+	if (trait_pars == 0)
+	{
 		return mainland_n * get_immig_rate_per_capita(
-			gam,
-			num_spec,
-			K,
-			A
-		);
-	} else {
-		// TODO implement case where trait_pars is not 0 
+								gam,
+								num_spec,
+								K,
+								A);
+	}
+	else
+	{
+		// TODO implement case where trait_pars is not 0
 	}
 }
 
@@ -184,10 +185,10 @@ double get_ext_rate_per_capita(
 	double mu,
 	int x,
 	int extcutoff = 1000,
-	double A = 1.0) 
+	double A = 1.0)
 {
-	double ext_rate_pc = max(0.0, mu * (pow( A, -x )));
-	return min(ext_rate_pc, (double) extcutoff);
+	double ext_rate_pc = std::max(0.0, mu * (pow(A, -x)));
+	return std::min(ext_rate_pc, (double)extcutoff);
 }
 
 //' Calculate extinction rate
@@ -207,7 +208,7 @@ double get_ext_rate_per_capita(
 //' @author Pedro Neves, Joshua Lambert, Shu Xie
 double get_ext_rate(
 	double mu,
-	List hyper_pars,
+	Rcpp::List hyper_pars,
 	int num_spec,
 	double A = 1.0,
 	int extcutoff = 1000,
@@ -215,15 +216,17 @@ double get_ext_rate(
 	int island_spec = 0)
 {
 	int x = hyper_pars["x"];
-	if (trait_pars == 0) {
+	if (trait_pars == 0)
+	{
 		double ext_rate_pc = num_spec * get_ext_rate_per_capita(
-			mu,
-			x,
-			extcutoff,
-			A
-		);
-		return min(ext_rate_pc, (double) extcutoff);
-	} else {
+											mu,
+											x,
+											extcutoff,
+											A);
+		return std::min(ext_rate_pc, (double)extcutoff);
+	}
+	else
+	{
 		// TODO implement case where trait_pars is not 0
 	}
 }
@@ -244,9 +247,12 @@ double get_ana_rate(
 	int island_spec = 0,
 	int trait_pars = 0)
 {
-	if (trait_pars == 0) {
-		return laa * num_immigrants;;
-	} else {
+	if (trait_pars == 0)
+	{
+		return laa * num_immigrants;
+	}
+	else
+	{
 		// TODO implement case where trait_pars is not 0
 	}
 }
@@ -270,7 +276,7 @@ double get_clado_rate_per_capita(
 	double A = 1.0)
 {
 	double caldo_rate_pc = lac * (pow(A, d)) * (1 - num_spec / (K * A));
-	return max(0.0, caldo_rate_pc);
+	return std::max(0.0, caldo_rate_pc);
 }
 
 //' Calculate cladogenesis rate
@@ -285,7 +291,7 @@ double get_clado_rate_per_capita(
 //' @author Pedro Neves, Joshua Lambert, Shu Xie
 double get_clado_rate(
 	double lac,
-	List hyper_pars,
+	Rcpp::List hyper_pars,
 	int num_spec,
 	double K,
 	double A,
@@ -294,15 +300,17 @@ double get_clado_rate(
 {
 	int d = hyper_pars["d"];
 
-	if (trait_pars == 0) {
+	if (trait_pars == 0)
+	{
 		return num_spec * get_clado_rate_per_capita(
-			lac,
-			d,
-			num_spec,
-			K,
-			A
-		);
-	} else {
+							  lac,
+							  d,
+							  num_spec,
+							  K,
+							  A);
+	}
+	else
+	{
 		// TODO implement case where trait_pars is not 0
 	}
 }
@@ -319,15 +327,15 @@ double get_clado_rate(
 //' @return a named list with the updated effective rates.
 //' @export
 // [[Rcpp::export]]
-List update_rates_cpp(
+Rcpp::List update_rates_cpp(
 	int timeval,
 	int total_time,
 	double gam,
 	double laa,
 	double lac,
 	double mu,
-	List hyper_pars,
-	List area_pars,
+	Rcpp::List hyper_pars,
+	Rcpp::List area_pars,
 	double K,
 	int num_spec,
 	int num_immigrants,
@@ -344,7 +352,6 @@ List update_rates_cpp(
 		peak,
 		island_ontogeny,
 		sea_level);
-	// testit::assert(is.numeric(A))
 
 	double immig_rate = get_immig_rate(
 		gam,
@@ -352,19 +359,16 @@ List update_rates_cpp(
 		K,
 		mainland_n,
 		A);
-	// testit::assert(is.numeric(immig_rate))
 
 	double ext_rate = get_ext_rate(
 		mu,
 		hyper_pars,
 		num_spec,
 		A);
-	// testit::assert(is.numeric(ext_rate))
 
 	double ana_rate = get_ana_rate(
 		laa,
 		num_immigrants);
-	// testit::assert(is.numeric(ana_rate))
 
 	double clado_rate = get_clado_rate(
 		lac,
@@ -372,12 +376,10 @@ List update_rates_cpp(
 		num_spec,
 		K,
 		A);
-	// testit::assert(is.numeric(clado_rate))
-	// std::cerr << "\n" << immig_rate << "\t" << ext_rate << "\t" << ana_rate << "\t" << clado_rate;
 
-	return List::create(
-		Named("immig_rate") = immig_rate,
-		Named("ext_rate") = ext_rate,
-		Named("ana_rate") = ana_rate,
-		Named("clado_rate") = clado_rate);
+	return Rcpp::List::create(
+		Rcpp::Named("immig_rate") = immig_rate,
+		Rcpp::Named("ext_rate") = ext_rate,
+		Rcpp::Named("ana_rate") = ana_rate,
+		Rcpp::Named("clado_rate") = clado_rate);
 }
