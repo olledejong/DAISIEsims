@@ -53,15 +53,20 @@ double island_area(
 {
 
 	int Tmax = area_pars["total_island_age"];
-	double Amax = area_pars["max_area"];
-	double Acurr = area_pars["current_area"];
-	double proptime_max = area_pars["proportional_peak_t"];
-	double ampl = area_pars["sea_level_amplitude"];
-	double freq = area_pars["sea_level_frequency"];
-	double theta = area_pars["island_gradient_angle"];
+	int Amax = area_pars["max_area"];
+	int Acurr = area_pars["current_area"];
+	int proptime_max = area_pars["proportional_peak_t"];
+	int ampl = area_pars["sea_level_amplitude"];
+	int freq = area_pars["sea_level_frequency"];
+	int theta = area_pars["island_gradient_angle"];
 
 	// Constant ontogeny and sea-level
-	if (island_ontogeny == 0 && sea_level == 0) { return 1; }
+	if (island_ontogeny == 0 && sea_level == 0) {
+		if (Amax != 1) {
+			warning("Constant island area requires a maximum area of 1.");
+		}
+		 return 1; 
+	}
 
 	// NOTE In all regular (non time-dep) versions of sim_core, island_ontogeny and sea_level always 0, and
 	// NOTE therefore the island_area is always set to 1. 
