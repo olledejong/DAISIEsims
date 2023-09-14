@@ -24,10 +24,10 @@ DAISIE_sim_core_cr <- function(
     colonisation is zero. Island cannot be colonised.")
   }
 
-  nonoceanic_sample <- DAISIE_nonoceanic_spec(
-    prob_samp = nonoceanic_pars[1],
-    prob_nonend = nonoceanic_pars[2],
-    mainland_n = mainland_n)
+  nonoceanic_sample <- DAISIE_nonoceanic_spec_cpp(
+    nonoceanic_pars[1], # NOTE always zero when using DAISIE_sim_cr
+    nonoceanic_pars[2], # NOTE always zero when using DAISIE_sim_cr
+    mainland_n)
   maxspecID <- mainland_n
   island_spec <- c()
   stt_table <- matrix(ncol = 4)

@@ -10,8 +10,21 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// DAISIE_nonoceanic_spec_cpp
+Rcpp::List DAISIE_nonoceanic_spec_cpp(int prob_samp, int prob_nonend, int mainland_n);
+RcppExport SEXP _DAISIEsims_DAISIE_nonoceanic_spec_cpp(SEXP prob_sampSEXP, SEXP prob_nonendSEXP, SEXP mainland_nSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type prob_samp(prob_sampSEXP);
+    Rcpp::traits::input_parameter< int >::type prob_nonend(prob_nonendSEXP);
+    Rcpp::traits::input_parameter< int >::type mainland_n(mainland_nSEXP);
+    rcpp_result_gen = Rcpp::wrap(DAISIE_nonoceanic_spec_cpp(prob_samp, prob_nonend, mainland_n));
+    return rcpp_result_gen;
+END_RCPP
+}
 // update_rates_cpp
-List update_rates_cpp(int timeval, int total_time, double gam, double laa, double lac, double mu, List hyper_pars, List area_pars, double K, int num_spec, int num_immigrants, int mainland_n, int peak, int island_ontogeny, int sea_level);
+Rcpp::List update_rates_cpp(int timeval, int total_time, double gam, double laa, double lac, double mu, Rcpp::List hyper_pars, Rcpp::List area_pars, double K, int num_spec, int num_immigrants, int mainland_n, int peak, int island_ontogeny, int sea_level);
 RcppExport SEXP _DAISIEsims_update_rates_cpp(SEXP timevalSEXP, SEXP total_timeSEXP, SEXP gamSEXP, SEXP laaSEXP, SEXP lacSEXP, SEXP muSEXP, SEXP hyper_parsSEXP, SEXP area_parsSEXP, SEXP KSEXP, SEXP num_specSEXP, SEXP num_immigrantsSEXP, SEXP mainland_nSEXP, SEXP peakSEXP, SEXP island_ontogenySEXP, SEXP sea_levelSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -22,8 +35,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type laa(laaSEXP);
     Rcpp::traits::input_parameter< double >::type lac(lacSEXP);
     Rcpp::traits::input_parameter< double >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< List >::type hyper_pars(hyper_parsSEXP);
-    Rcpp::traits::input_parameter< List >::type area_pars(area_parsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type hyper_pars(hyper_parsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type area_pars(area_parsSEXP);
     Rcpp::traits::input_parameter< double >::type K(KSEXP);
     Rcpp::traits::input_parameter< int >::type num_spec(num_specSEXP);
     Rcpp::traits::input_parameter< int >::type num_immigrants(num_immigrantsSEXP);
@@ -37,6 +50,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_DAISIEsims_DAISIE_nonoceanic_spec_cpp", (DL_FUNC) &_DAISIEsims_DAISIE_nonoceanic_spec_cpp, 3},
     {"_DAISIEsims_update_rates_cpp", (DL_FUNC) &_DAISIEsims_update_rates_cpp, 15},
     {NULL, NULL, 0}
 };
