@@ -1,3 +1,38 @@
+#' Translate user-friendly ontogeny codes to numerics
+#'
+#' @inheritParams default_params_doc
+#'
+#' @return Numeric, 0 for null-ontogeny, 1 for beta function
+#' @noRd
+translate_island_ontogeny <- function(island_ontogeny) {
+
+  if (island_ontogeny == "const" || island_ontogeny == 0) {
+    island_ontogeny <- 0
+  }
+  if (island_ontogeny == "beta" || island_ontogeny == 1) {
+    island_ontogeny <- 1
+  }
+  return(island_ontogeny)
+}
+
+#' Translate user-friendly sea-level codes to numerics
+#'
+#' @inheritParams default_params_doc
+#'
+#' @return Numeric, 0 for null-sea-level, 1 for sine function
+#' @noRd
+translate_sea_level <- function(sea_level) {
+
+  if (sea_level == "const" || sea_level == 0) {
+    sea_level <- 0
+  }
+
+  if (sea_level == "sine" || sea_level == 1) {
+    sea_level <- 1
+  }
+  return(sea_level)
+}
+
 #' Calculates the species on the island initially when \code{nonoceanic_pars[1]
 #' != 0}
 #'
