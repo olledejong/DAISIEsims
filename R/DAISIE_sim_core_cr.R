@@ -96,7 +96,7 @@ DAISIE_sim_core_cr <- function(
         0, # island ontogeny
         0  # sea level
       )
-      testit::assert(are_rates(rates)) # NOTE are_rates is very slow
+      testit::assert(are_rates(rates)) # NOTE are_rates is very slow (delete when whole while-loop becomes C++)
       possible_event <- DAISIE_sample_event_cr(
         rates = rates
       )
