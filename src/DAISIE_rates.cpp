@@ -49,13 +49,7 @@ double island_area(
 	int island_ontogeny,
 	int sea_level)
 {
-	int Tmax = area_pars["total_island_age"];
 	int Amax = area_pars["max_area"];
-	int Acurr = area_pars["current_area"];
-	int proptime_max = area_pars["proportional_peak_t"];
-	int ampl = area_pars["sea_level_amplitude"];
-	int freq = area_pars["sea_level_frequency"];
-	int theta = area_pars["island_gradient_angle"];
 
 	// Constant ontogeny and sea-level
 	if (island_ontogeny == 0 && sea_level == 0)
@@ -77,6 +71,13 @@ double island_area(
 
 	// NOTE It does, however, result in a 'divide by zero' exception in C++, calling for different handling
 	// NOTE For now, we moved the instantiation of 'proptime' to below the above mentioned case ( constant area )
+
+	int Tmax = area_pars["total_island_age"];
+	int Acurr = area_pars["current_area"];
+	int proptime_max = area_pars["proportional_peak_t"];
+	int ampl = area_pars["sea_level_amplitude"];
+	int freq = area_pars["sea_level_frequency"];
+	int theta = area_pars["island_gradient_angle"];
 
 	double proptime = timeval / Tmax; // Returns NaN in R when both are 0 at the very first time-step
 	double proptime_curr = total_time / Tmax;
@@ -131,7 +132,7 @@ double get_immig_rate_per_capita(
 	double K,
 	double A)
 {
-	// NOTE function in R uses pmax, but are there at any point more than two values?
+	// NOTE function in R uses pmax, might need tweaking here when traits are implemented
 	return std::max(0.0, gam * (1 - (num_spec / (K * A))));
 }
 
@@ -208,14 +209,13 @@ double get_ext_rate_per_capita(
 //' @author Pedro Neves, Joshua Lambert, Shu Xie
 double get_ext_rate(
 	double mu,
-	Rcpp::List hyper_pars,
+	int x,
 	int num_spec,
 	double A = 1.0,
 	int extcutoff = 1000,
 	int trait_pars = 0,
 	int island_spec = 0)
 {
-	int x = hyper_pars["x"];
 	if (trait_pars == 0)
 	{
 		double ext_rate_pc = num_spec * get_ext_rate_per_capita(
@@ -291,15 +291,13 @@ double get_clado_rate_per_capita(
 //' @author Pedro Neves, Joshua Lambert, Shu Xie
 double get_clado_rate(
 	double lac,
-	Rcpp::List hyper_pars,
+	int d,
 	int num_spec,
 	double K,
 	double A,
 	int trait_pars = 0,
 	int island_spec = 0)
 {
-	int d = hyper_pars["d"];
-
 	if (trait_pars == 0)
 	{
 		return num_spec * get_clado_rate_per_capita(
@@ -362,7 +360,7 @@ Rcpp::List update_rates_cpp(
 
 	double ext_rate = get_ext_rate(
 		mu,
-		hyper_pars,
+		hyper_pars["x"],
 		num_spec,
 		A);
 
@@ -372,7 +370,7 @@ Rcpp::List update_rates_cpp(
 
 	double clado_rate = get_clado_rate(
 		lac,
-		hyper_pars,
+		hyper_pars["d"],
 		num_spec,
 		K,
 		A);
