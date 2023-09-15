@@ -97,8 +97,12 @@ DAISIE_sim_core_cr <- function(
         0  # sea level
       )
       testit::assert(are_rates(rates)) # NOTE are_rates is very slow (delete when whole while-loop becomes C++)
-      possible_event <- DAISIE_sample_event_cr(
-        rates = rates
+
+      possible_event <- DAISIE_sample_event_cr_cpp(
+        rates$immig_rate,
+        rates$ext_rate,
+        rates$clado_rate,
+        rates$ana_rate
       )
 
       updated_state <- DAISIE_sim_update_state_cr(

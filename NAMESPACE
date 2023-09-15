@@ -2,6 +2,7 @@
 
 export(DAISIE_nonoceanic_spec_cpp)
 export(DAISIE_plot_sims)
+export(DAISIE_sample_event_cr_cpp)
 export(DAISIE_sim)
 export(DAISIE_sim_core_cr)
 export(DAISIE_sim_cr)

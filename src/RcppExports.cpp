@@ -48,10 +48,25 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// DAISIE_sample_event_cr_cpp
+int DAISIE_sample_event_cr_cpp(double immig_rate, double ext_rate, double clado_rate, double ana_rate);
+RcppExport SEXP _DAISIEsims_DAISIE_sample_event_cr_cpp(SEXP immig_rateSEXP, SEXP ext_rateSEXP, SEXP clado_rateSEXP, SEXP ana_rateSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type immig_rate(immig_rateSEXP);
+    Rcpp::traits::input_parameter< double >::type ext_rate(ext_rateSEXP);
+    Rcpp::traits::input_parameter< double >::type clado_rate(clado_rateSEXP);
+    Rcpp::traits::input_parameter< double >::type ana_rate(ana_rateSEXP);
+    rcpp_result_gen = Rcpp::wrap(DAISIE_sample_event_cr_cpp(immig_rate, ext_rate, clado_rate, ana_rate));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_DAISIEsims_DAISIE_nonoceanic_spec_cpp", (DL_FUNC) &_DAISIEsims_DAISIE_nonoceanic_spec_cpp, 3},
     {"_DAISIEsims_update_rates_cpp", (DL_FUNC) &_DAISIEsims_update_rates_cpp, 15},
+    {"_DAISIEsims_DAISIE_sample_event_cr_cpp", (DL_FUNC) &_DAISIEsims_DAISIE_sample_event_cr_cpp, 4},
     {NULL, NULL, 0}
 };
 
