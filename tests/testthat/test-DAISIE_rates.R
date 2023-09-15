@@ -100,7 +100,7 @@ test_that("Test C++ DAISIE_rates; island area (max area too large)", {
 
 # NOTE not testing ontogeny & sea_level within island area (not implemented yet)
 
-test_that("Test C++ DAISIE_rates; island area (max area too large)", {
+test_that("Test C++ DAISIE_rates; compare cpp rate outcomes to original rate outcomes", {
     compare_rates <- function(gam = 1, laa = 1, lac = 1, mu = 1) {
         timeval <- 2
         total_time <- 5
