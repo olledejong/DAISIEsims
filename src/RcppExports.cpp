@@ -49,16 +49,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // DAISIE_sample_event_cr_cpp
-int DAISIE_sample_event_cr_cpp(double immig_rate, double ext_rate, double clado_rate, double ana_rate);
-RcppExport SEXP _DAISIEsims_DAISIE_sample_event_cr_cpp(SEXP immig_rateSEXP, SEXP ext_rateSEXP, SEXP clado_rateSEXP, SEXP ana_rateSEXP) {
+int DAISIE_sample_event_cr_cpp(double immig_rate, double ext_rate, double ana_rate, double clado_rate);
+RcppExport SEXP _DAISIEsims_DAISIE_sample_event_cr_cpp(SEXP immig_rateSEXP, SEXP ext_rateSEXP, SEXP ana_rateSEXP, SEXP clado_rateSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< double >::type immig_rate(immig_rateSEXP);
     Rcpp::traits::input_parameter< double >::type ext_rate(ext_rateSEXP);
-    Rcpp::traits::input_parameter< double >::type clado_rate(clado_rateSEXP);
     Rcpp::traits::input_parameter< double >::type ana_rate(ana_rateSEXP);
-    rcpp_result_gen = Rcpp::wrap(DAISIE_sample_event_cr_cpp(immig_rate, ext_rate, clado_rate, ana_rate));
+    Rcpp::traits::input_parameter< double >::type clado_rate(clado_rateSEXP);
+    rcpp_result_gen = Rcpp::wrap(DAISIE_sample_event_cr_cpp(immig_rate, ext_rate, ana_rate, clado_rate));
     return rcpp_result_gen;
 END_RCPP
 }

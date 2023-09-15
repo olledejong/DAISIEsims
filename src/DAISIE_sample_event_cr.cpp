@@ -25,8 +25,8 @@
 int DAISIE_sample_event_cr_cpp(
     double immig_rate,
     double ext_rate,
-    double clado_rate,
-    double ana_rate)
+    double ana_rate,
+    double clado_rate)
 {
     std::random_device rd;
     std::mt19937 gen(rd());

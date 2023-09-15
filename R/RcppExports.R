@@ -165,7 +165,7 @@ update_rates_cpp <- function(timeval, total_time, gam, laa, lac, mu, hyper_pars,
 #' @keywords internal
 #' @author Pedro Neves
 #' @export
-DAISIE_sample_event_cr_cpp <- function(immig_rate, ext_rate, clado_rate, ana_rate) {
-    .Call(`_DAISIEsims_DAISIE_sample_event_cr_cpp`, immig_rate, ext_rate, clado_rate, ana_rate)
+DAISIE_sample_event_cr_cpp <- function(immig_rate, ext_rate, ana_rate, clado_rate) {
+    .Call(`_DAISIEsims_DAISIE_sample_event_cr_cpp`, immig_rate, ext_rate, ana_rate, clado_rate)
 }
 

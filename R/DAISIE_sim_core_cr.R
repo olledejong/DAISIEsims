@@ -101,8 +101,8 @@ DAISIE_sim_core_cr <- function(
       possible_event <- DAISIE_sample_event_cr_cpp(
         rates$immig_rate,
         rates$ext_rate,
-        rates$clado_rate,
-        rates$ana_rate
+        rates$ana_rate,
+        rates$clado_rate
       )
 
       updated_state <- DAISIE_sim_update_state_cr(

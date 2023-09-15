@@ -4,16 +4,16 @@
 \alias{DAISIE_sample_event_cr_cpp}
 \title{Samples what event to happen next}
 \usage{
-DAISIE_sample_event_cr_cpp(immig_rate, ext_rate, clado_rate, ana_rate)
+DAISIE_sample_event_cr_cpp(immig_rate, ext_rate, ana_rate, clado_rate)
 }
 \arguments{
 \item{immig_rate}{Numeric rate of immigration}
 
 \item{ext_rate}{Numeric rate of extinction}
 
-\item{clado_rate}{Numeric rate of cladogenesis}
-
 \item{ana_rate}{Numeric rate of anagenesis}
+
+\item{clado_rate}{Numeric rate of cladogenesis}
 }
 \value{
 numeric indicating what event will happen, or a supposed event that
