@@ -5,13 +5,6 @@
 
 #include <Rcpp.h>
 
-//' Sequence generator
-int f()
-{
-    static int i;
-    return ++i;
-}
-
 //'Calculates the species on the island initially when \code{nonoceanic_pars[1]
 //'!= 0}
 //'
@@ -46,7 +39,7 @@ Rcpp::List DAISIE_nonoceanic_spec_cpp(
     {
         if (mainland_n != 0)
         {
-            std::generate(mainland_spec.begin(), mainland_spec.end(), f);
+            std::iota(mainland_spec.begin(), mainland_spec.end(), 1);
         }
     }
 
