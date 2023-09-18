@@ -11,20 +11,18 @@ DAISIE_create_island <- function(stt_table,
                                  island_spec,
                                  mainland_n,
                                  trait_pars = NULL) {
-
-  # At this moment we only take trait_pars == NULL into account
-  #
-  # if (!is.null(trait_pars)) {
-  #   return(
-  #     DAISIE_create_island_trait(
-  #       stt_table = stt_table,
-  #       total_time = total_time,
-  #       island_spec = island_spec,
-  #       mainland_n = mainland_n,
-  #       trait_pars = trait_pars
-  #     )
-  #   )
-  # }
+  
+  if (!is.null(trait_pars)) {
+    return(
+      DAISIE_create_island_trait(
+        stt_table = stt_table,
+        total_time = total_time,
+        island_spec = island_spec,
+        mainland_n = mainland_n,
+        trait_pars = trait_pars
+      )
+    )
+  }
   ### if there are no species on the island branching_times = island_age,
   ### stac = 0, missing_species = 0
   if (length(island_spec[, 1]) == 0) {
