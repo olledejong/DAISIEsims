@@ -62,8 +62,10 @@ test_that("Test C++ functionality; DAISIE_sim_core output is correct", {
   expect_true(is.numeric(sim_core$taxon_list[[1]]$branching_times))
   expect_true(is.numeric(sim_core$taxon_list[[1]]$stac))
   expect_true(is.numeric(sim_core$taxon_list[[1]]$missing_species))
-  # NOTE taxon_list length diverges from original R test (where length == 5) since seeding happens on Cpp side
-  expect_true(length(sim_core$taxon_list) == 4) 
+  # NOTE taxon_list length test cannot be used, as we cannot influence the seed on the C++ side.
+  # NOTE This is caused by the sampling in DAISIE_sample_event_cr.cpp
+  # NOTE For proof that sampling works --> test-DAISIE_sample_event_cr.R
+  # expect_true(length(sim_core$taxon_list) == 5) 
   expect_true("branching_times" %in% names(sim_core$taxon_list[[1]]))
   expect_true("stac" %in% names(sim_core$taxon_list[[1]]))
   expect_true("missing_species" %in% names(sim_core$taxon_list[[1]]))
