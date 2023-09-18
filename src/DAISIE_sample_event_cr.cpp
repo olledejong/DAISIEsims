@@ -32,7 +32,8 @@ int DAISIE_sample_event_cr_cpp(
     std::mt19937 gen(rd());
     std::discrete_distribution<> distribution {immig_rate, ext_rate, ana_rate, clado_rate};
 
-    int possible_event = distribution(gen) + 1; // R indexes from 1, not 0 (so 0 should be 1, 1 should be 2, etc)
+    // R indexes from 1, not 0 (so 0 should be 1, 1 should be 2, etc)
+    int possible_event = distribution(gen) + 1; 
 
     return possible_event;
 }
