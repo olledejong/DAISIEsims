@@ -63,10 +63,6 @@ test_that("Test C++ DAISIE_rates; island area (constant area)", {
     expect_false(
         rates$immig_rate < 0 && rates$ext_rate && rates$ana_rate && rates$clado_rate
     )
-
-    # TODO Somehow test the correctness of the rates themselves.
-    # NOTE We cannot, however, access the functions that calculate the rates.
-    # NOTE We only have the updated rates for a specific time-point.
 })
 
 test_that("Test C++ DAISIE_rates; island area (max area too large)", {
