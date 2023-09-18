@@ -169,3 +169,21 @@ DAISIE_sample_event_cr_cpp <- function(immig_rate, ext_rate, ana_rate, clado_rat
     .Call(`_DAISIEsims_DAISIE_sample_event_cr_cpp`, immig_rate, ext_rate, ana_rate, clado_rate)
 }
 
+#' Update internal Gillespie bookeeping objects
+#'
+#' @param stt_table A species=through-time table.
+#' @param total_time Simulated amount of time.
+#' @param timeval Current time of simulation.
+#' @param mainland_spec A vector with the numeric IDs of the mainland species
+#' (i.e. potential colonizers).
+#' @param island_spec A matrix with the species on the island (state of the
+#' system at each time point).
+#'
+#' @return A named list with the updated input arguments at time of simulation.
+#'
+#' @noRd
+#' @export
+DAISIE_spec_tables_cpp <- function(total_time, timeval, nonoceanic_sample, maxspecID) {
+    .Call(`_DAISIEsims_DAISIE_spec_tables_cpp`, total_time, timeval, nonoceanic_sample, maxspecID)
+}
+

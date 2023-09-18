@@ -30,14 +30,21 @@ DAISIE_sim_core_cr <- function(
     mainland_n)
   maxspecID <- mainland_n
   island_spec <- c()
-  stt_table <- matrix(ncol = 4)
-  colnames(stt_table) <- c("Time", "nI", "nA", "nC")
-  spec_tables <- DAISIE_spec_tables(stt_table,
-                                    total_time,
-                                    timeval,
-                                    nonoceanic_sample,
-                                    island_spec,
-                                    maxspecID)
+  # stt_table <- matrix(ncol = 4)
+  # colnames(stt_table) <- c("Time", "nI", "nA", "nC")
+  # spec_tables <- DAISIE_spec_tables(stt_table,
+  #                                   total_time,
+  #                                   timeval,
+  #                                   nonoceanic_sample,
+  #                                   island_spec,
+  #                                   maxspecID)
+  spec_tables <- DAISIE_spec_tables_cpp(
+    total_time,
+    timeval,
+    nonoceanic_sample,
+    island_spec, # NOTE Maybe remove this?
+    maxspecID
+  )
   maxspecID <- spec_tables$maxspecID
   stt_table <- spec_tables$stt_table
   mainland_spec <- spec_tables$mainland_spec
