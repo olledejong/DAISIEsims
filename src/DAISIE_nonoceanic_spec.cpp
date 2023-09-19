@@ -3,6 +3,8 @@
 #include <list>
 #include <math.h>
 
+#include "helper_funcs_vector.h"
+
 #include <Rcpp.h>
 
 //'Calculates the species on the island initially when \code{nonoceanic_pars[1]
@@ -26,7 +28,7 @@ Rcpp::List DAISIE_nonoceanic_spec_cpp(
     // Make accessable for List creation
     int init_nonend_spec = 0;
     int init_end_spec = 0;
-    std::vector<int> init_nonend_spec_vec = {0};
+    std::vector<int> init_nonend_spec_vec {0};
     std::vector<int> init_end_spec_vec {0};
     std::vector<int> mainland_spec(mainland_n);
 
@@ -46,8 +48,8 @@ Rcpp::List DAISIE_nonoceanic_spec_cpp(
     return Rcpp::List::create(
         Rcpp::Named("init_nonend_spec") = init_nonend_spec,
         Rcpp::Named("init_end_spec") = init_end_spec,
-        Rcpp::Named("init_nonend_spec_vec") = init_nonend_spec_vec,
-        Rcpp::Named("init_end_spec_vec") = init_end_spec_vec,
-        Rcpp::Named("mainland_spec") = mainland_spec
+        Rcpp::Named("init_nonend_spec_vec") = cppToR_intVec(init_nonend_spec_vec),
+        Rcpp::Named("init_end_spec_vec") = cppToR_intVec(init_end_spec_vec),
+        Rcpp::Named("mainland_spec") = cppToR_intVec(mainland_spec)
     );
 }

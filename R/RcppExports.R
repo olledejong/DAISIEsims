@@ -183,7 +183,7 @@ DAISIE_sample_event_cr_cpp <- function(immig_rate, ext_rate, ana_rate, clado_rat
 #'
 #' @noRd
 #' @export
-DAISIE_spec_tables_cpp <- function(total_time, timeval, nonoceanic_sample, maxspecID) {
-    .Call(`_DAISIEsims_DAISIE_spec_tables_cpp`, total_time, timeval, nonoceanic_sample, maxspecID)
+DAISIE_spec_tables_cpp <- function(total_time, timeval, init_nonend_spec, init_end_spec, mainland_spec, init_nonend_spec_vec, init_end_spec_vec, maxspecID) {
+    .Call(`_DAISIEsims_DAISIE_spec_tables_cpp`, total_time, timeval, init_nonend_spec, init_end_spec, mainland_spec, init_nonend_spec_vec, init_end_spec_vec, maxspecID)
 }
 

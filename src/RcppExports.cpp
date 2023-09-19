@@ -63,16 +63,20 @@ BEGIN_RCPP
 END_RCPP
 }
 // DAISIE_spec_tables_cpp
-Rcpp::List DAISIE_spec_tables_cpp(int total_time, int timeval, Rcpp::List nonoceanic_sample, int maxspecID);
-RcppExport SEXP _DAISIEsims_DAISIE_spec_tables_cpp(SEXP total_timeSEXP, SEXP timevalSEXP, SEXP nonoceanic_sampleSEXP, SEXP maxspecIDSEXP) {
+Rcpp::List DAISIE_spec_tables_cpp(int total_time, int timeval, int init_nonend_spec, int init_end_spec, std::vector<int> mainland_spec, std::vector<int> init_nonend_spec_vec, std::vector<int> init_end_spec_vec, int maxspecID);
+RcppExport SEXP _DAISIEsims_DAISIE_spec_tables_cpp(SEXP total_timeSEXP, SEXP timevalSEXP, SEXP init_nonend_specSEXP, SEXP init_end_specSEXP, SEXP mainland_specSEXP, SEXP init_nonend_spec_vecSEXP, SEXP init_end_spec_vecSEXP, SEXP maxspecIDSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< int >::type total_time(total_timeSEXP);
     Rcpp::traits::input_parameter< int >::type timeval(timevalSEXP);
-    Rcpp::traits::input_parameter< Rcpp::List >::type nonoceanic_sample(nonoceanic_sampleSEXP);
+    Rcpp::traits::input_parameter< int >::type init_nonend_spec(init_nonend_specSEXP);
+    Rcpp::traits::input_parameter< int >::type init_end_spec(init_end_specSEXP);
+    Rcpp::traits::input_parameter< std::vector<int> >::type mainland_spec(mainland_specSEXP);
+    Rcpp::traits::input_parameter< std::vector<int> >::type init_nonend_spec_vec(init_nonend_spec_vecSEXP);
+    Rcpp::traits::input_parameter< std::vector<int> >::type init_end_spec_vec(init_end_spec_vecSEXP);
     Rcpp::traits::input_parameter< int >::type maxspecID(maxspecIDSEXP);
-    rcpp_result_gen = Rcpp::wrap(DAISIE_spec_tables_cpp(total_time, timeval, nonoceanic_sample, maxspecID));
+    rcpp_result_gen = Rcpp::wrap(DAISIE_spec_tables_cpp(total_time, timeval, init_nonend_spec, init_end_spec, mainland_spec, init_nonend_spec_vec, init_end_spec_vec, maxspecID));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -81,7 +85,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_DAISIEsims_DAISIE_nonoceanic_spec_cpp", (DL_FUNC) &_DAISIEsims_DAISIE_nonoceanic_spec_cpp, 3},
     {"_DAISIEsims_update_rates_cpp", (DL_FUNC) &_DAISIEsims_update_rates_cpp, 15},
     {"_DAISIEsims_DAISIE_sample_event_cr_cpp", (DL_FUNC) &_DAISIEsims_DAISIE_sample_event_cr_cpp, 4},
-    {"_DAISIEsims_DAISIE_spec_tables_cpp", (DL_FUNC) &_DAISIEsims_DAISIE_spec_tables_cpp, 4},
+    {"_DAISIEsims_DAISIE_spec_tables_cpp", (DL_FUNC) &_DAISIEsims_DAISIE_spec_tables_cpp, 8},
     {NULL, NULL, 0}
 };
 

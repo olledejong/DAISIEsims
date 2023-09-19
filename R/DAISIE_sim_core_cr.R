@@ -29,20 +29,15 @@ DAISIE_sim_core_cr <- function(
     nonoceanic_pars[2], # NOTE always zero when using DAISIE_sim_cr
     mainland_n)
   maxspecID <- mainland_n
-  island_spec <- c()
-  # stt_table <- matrix(ncol = 4)
-  # colnames(stt_table) <- c("Time", "nI", "nA", "nC")
-  # spec_tables <- DAISIE_spec_tables(stt_table,
-  #                                   total_time,
-  #                                   timeval,
-  #                                   nonoceanic_sample,
-  #                                   island_spec,
-  #                                   maxspecID)
+
   spec_tables <- DAISIE_spec_tables_cpp(
     total_time,
     timeval,
-    nonoceanic_sample,
-    island_spec, # NOTE Maybe remove this?
+    nonoceanic_sample$init_nonend_spec, # NOTE pass seperately instead of together
+    nonoceanic_sample$init_end_spec,
+    nonoceanic_sample$mainland_spec,
+    nonoceanic_sample$init_nonend_spec_vec,
+    nonoceanic_sample$init_end_spec_vec,
     maxspecID
   )
   maxspecID <- spec_tables$maxspecID
