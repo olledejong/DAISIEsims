@@ -42,7 +42,7 @@ double calc_Abeta(
 //' Proceedings of the Royal Society of London B: Biological
 //' Sciences 281.1784 (2014): 20133227.
 double island_area(
-	int timeval,
+	double timeval,
 	int total_time,
 	Rcpp::List area_pars,
 	int peak,
@@ -326,7 +326,7 @@ double get_clado_rate(
 //' @export
 // [[Rcpp::export]]
 Rcpp::List update_rates_cpp(
-	int timeval,
+	double timeval,
 	int total_time,
 	double gam,
 	double laa,

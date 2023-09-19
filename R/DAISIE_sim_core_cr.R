@@ -106,7 +106,15 @@ DAISIE_sim_core_cr <- function(
         rates$ana_rate,
         rates$clado_rate
       )
-
+      DAISIE_sim_update_state_cr_cpp(
+        timeval,
+        total_time,
+        possible_event,
+        maxspecID,
+        mainland_spec,
+        island_spec,
+        stt_table
+      )
       updated_state <- DAISIE_sim_update_state_cr(
         timeval = timeval,
         total_time = total_time,

@@ -24,12 +24,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // update_rates_cpp
-Rcpp::List update_rates_cpp(int timeval, int total_time, double gam, double laa, double lac, double mu, Rcpp::List hyper_pars, Rcpp::List area_pars, double K, int num_spec, int num_immigrants, int mainland_n, int peak, int island_ontogeny, int sea_level);
+Rcpp::List update_rates_cpp(double timeval, int total_time, double gam, double laa, double lac, double mu, Rcpp::List hyper_pars, Rcpp::List area_pars, double K, int num_spec, int num_immigrants, int mainland_n, int peak, int island_ontogeny, int sea_level);
 RcppExport SEXP _DAISIEsims_update_rates_cpp(SEXP timevalSEXP, SEXP total_timeSEXP, SEXP gamSEXP, SEXP laaSEXP, SEXP lacSEXP, SEXP muSEXP, SEXP hyper_parsSEXP, SEXP area_parsSEXP, SEXP KSEXP, SEXP num_specSEXP, SEXP num_immigrantsSEXP, SEXP mainland_nSEXP, SEXP peakSEXP, SEXP island_ontogenySEXP, SEXP sea_levelSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type timeval(timevalSEXP);
+    Rcpp::traits::input_parameter< double >::type timeval(timevalSEXP);
     Rcpp::traits::input_parameter< int >::type total_time(total_timeSEXP);
     Rcpp::traits::input_parameter< double >::type gam(gamSEXP);
     Rcpp::traits::input_parameter< double >::type laa(laaSEXP);
@@ -62,6 +62,23 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// DAISIE_sim_update_state_cr_cpp
+Rcpp::List DAISIE_sim_update_state_cr_cpp(double timeval, int total_time, int possible_event, int maxspecID, std::vector<int> mainland_spec, std::vector<std::vector<std::string>> island_spec, std::vector<int> stt_table);
+RcppExport SEXP _DAISIEsims_DAISIE_sim_update_state_cr_cpp(SEXP timevalSEXP, SEXP total_timeSEXP, SEXP possible_eventSEXP, SEXP maxspecIDSEXP, SEXP mainland_specSEXP, SEXP island_specSEXP, SEXP stt_tableSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type timeval(timevalSEXP);
+    Rcpp::traits::input_parameter< int >::type total_time(total_timeSEXP);
+    Rcpp::traits::input_parameter< int >::type possible_event(possible_eventSEXP);
+    Rcpp::traits::input_parameter< int >::type maxspecID(maxspecIDSEXP);
+    Rcpp::traits::input_parameter< std::vector<int> >::type mainland_spec(mainland_specSEXP);
+    Rcpp::traits::input_parameter< std::vector<std::vector<std::string>> >::type island_spec(island_specSEXP);
+    Rcpp::traits::input_parameter< std::vector<int> >::type stt_table(stt_tableSEXP);
+    rcpp_result_gen = Rcpp::wrap(DAISIE_sim_update_state_cr_cpp(timeval, total_time, possible_event, maxspecID, mainland_spec, island_spec, stt_table));
+    return rcpp_result_gen;
+END_RCPP
+}
 // DAISIE_spec_tables_cpp
 Rcpp::List DAISIE_spec_tables_cpp(int total_time, int timeval, int init_nonend_spec, int init_end_spec, std::vector<int> mainland_spec, std::vector<int> init_nonend_spec_vec, std::vector<int> init_end_spec_vec, int maxspecID);
 RcppExport SEXP _DAISIEsims_DAISIE_spec_tables_cpp(SEXP total_timeSEXP, SEXP timevalSEXP, SEXP init_nonend_specSEXP, SEXP init_end_specSEXP, SEXP mainland_specSEXP, SEXP init_nonend_spec_vecSEXP, SEXP init_end_spec_vecSEXP, SEXP maxspecIDSEXP) {
@@ -85,6 +102,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_DAISIEsims_DAISIE_nonoceanic_spec_cpp", (DL_FUNC) &_DAISIEsims_DAISIE_nonoceanic_spec_cpp, 3},
     {"_DAISIEsims_update_rates_cpp", (DL_FUNC) &_DAISIEsims_update_rates_cpp, 15},
     {"_DAISIEsims_DAISIE_sample_event_cr_cpp", (DL_FUNC) &_DAISIEsims_DAISIE_sample_event_cr_cpp, 4},
+    {"_DAISIEsims_DAISIE_sim_update_state_cr_cpp", (DL_FUNC) &_DAISIEsims_DAISIE_sim_update_state_cr_cpp, 7},
     {"_DAISIEsims_DAISIE_spec_tables_cpp", (DL_FUNC) &_DAISIEsims_DAISIE_spec_tables_cpp, 8},
     {NULL, NULL, 0}
 };

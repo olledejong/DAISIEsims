@@ -3,9 +3,9 @@
 #include <list>
 #include <math.h>
 
-#include "helper_funcs_vector.h"
-
 #include <Rcpp.h>
+
+#include "helper_functions.h"
 
 //'Calculates the species on the island initially when \code{nonoceanic_pars[1]
 //'!= 0}

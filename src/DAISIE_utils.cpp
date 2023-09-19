@@ -3,9 +3,9 @@
 #include <list>
 #include <math.h>
 
-#include "helper_funcs_matrix.h"
-
 #include <Rcpp.h>
+
+#include "helper_functions.h"
 
 //' Update internal Gillespie bookeeping objects
 //'
