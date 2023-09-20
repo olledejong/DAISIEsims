@@ -1,4 +1,5 @@
-#pragma once
+// #pragma once
+// ^ seems to not be working ^ --- neither does #ifndef
 
 #include <iostream>
 #include <vector>
@@ -9,7 +10,7 @@
 // TODO move functions that are not used by multiple files
 
 //' Retrieves row indexes where 
-int get_row_index_where_col_equals_str(
+inline int get_row_index_where_col_equals_str(
     std::vector<std::vector<std::string>> mat,
     int col_of_interest,
     std::string query) 
@@ -26,7 +27,7 @@ int get_row_index_where_col_equals_str(
 }
 
 //' Retrieves row indexes where 
-std::vector<int> get_row_indexes_where_col_equals_str(
+inline std::vector<int> get_row_indexes_where_col_equals_str(
     std::vector<std::vector<std::string>> mat,
     int col_of_interest,
     std::string query) 
@@ -42,7 +43,7 @@ std::vector<int> get_row_indexes_where_col_equals_str(
 }
 
 // function that translates c++ integer vector to R
-Rcpp::IntegerVector cppToR_intVec(
+inline Rcpp::IntegerVector cppToR_intVec(
     std::vector<int> cppVec)
 {
     Rcpp::IntegerVector rVec;
@@ -52,9 +53,9 @@ Rcpp::IntegerVector cppToR_intVec(
     return rVec;
 }
 
-// function that translates c++ integer matrix to R matrix
-Rcpp::IntegerMatrix cppToR_intMat(
-    std::vector<std::vector<int>> cppMat)
+// function that translates c++ string matrix to R an matrix
+inline Rcpp::StringMatrix cppToR_strMat(
+    std::vector<std::vector<std::string>> cppMat)
 {
     int numRows = cppMat.size();
     int numCols = cppMat[0].size();
@@ -64,7 +65,7 @@ Rcpp::IntegerMatrix cppToR_intMat(
         return R_NilValue;
     }
 
-    Rcpp::IntegerMatrix rMat(numRows, numCols);
+    Rcpp::StringMatrix rMat(numRows, numCols);
 
     for (int i = 0; i < numRows; ++i)
     { // loop rows

@@ -40,7 +40,6 @@ Rcpp::List DAISIE_spec_tables_cpp(
     // No rows to add
 
     if (init_nonend_spec == 0 && init_end_spec == 0) {
-        // no rows to add
         return Rcpp::List::create(
             Rcpp::Named("stt_table") = stt_table,
             Rcpp::Named("init_nonend_spec") = init_nonend_spec,
@@ -54,30 +53,31 @@ Rcpp::List DAISIE_spec_tables_cpp(
     // Rows have to be added
 
     int total_rows = init_nonend_spec + init_end_spec;
-    std::vector<std::vector<int>> island_spec(total_rows, std::vector<int>(7, 0)); 
+    std::vector<std::vector<std::string>> island_spec(total_rows, std::vector<std::string>(7, "")); 
     
     int rows_handled = 0;
     if (init_nonend_spec != 0) { // if we need to add a non-endemic row
         for (int i = 0; i < init_nonend_spec; ++i) {
-            island_spec[rows_handled][0] = init_nonend_spec_vec[i];
-            island_spec[rows_handled][1] = init_nonend_spec_vec[i];
-            island_spec[rows_handled][2] = timeval;
-            island_spec[rows_handled][3] = 1; // 1 == "I" and 2 == "A" // NOTE are these ever used?
-            island_spec[rows_handled][4] = 0; // instead of NA?
-            island_spec[rows_handled][5] = 0; // instead of NA?
-            island_spec[rows_handled][6] = 0; // instead of NA?
+            island_spec[rows_handled][0] = std::to_string(init_nonend_spec_vec[i]);
+            island_spec[rows_handled][1] = std::to_string(init_nonend_spec_vec[i]);
+            island_spec[rows_handled][2] = std::to_string(timeval);
+            island_spec[rows_handled][3] = "I";
+            island_spec[rows_handled][4] = ""; // instead of NA
+            island_spec[rows_handled][5] = ""; // instead of NA
+            island_spec[rows_handled][6] = ""; // instead of NA
             rows_handled += 1;
         }
     }
     if (init_end_spec != 0) { // if we need to add a endemic row
-        for (int i = 0; i < init_nonend_spec; ++i) {
-            island_spec[rows_handled][0] = maxspecID + 1;
-            island_spec[rows_handled][1] = init_end_spec_vec[i];
-            island_spec[rows_handled][2] = timeval;
-            island_spec[rows_handled][3] = 2; // 1 == "I" and 2 == "A" // NOTE are these ever used?
-            island_spec[rows_handled][4] = 0; // instead of NA?
-            island_spec[rows_handled][5] = 0; // instead of NA?
-            island_spec[rows_handled][6] = 0; // instead of NA?
+        for (int i = 0; rows_handled < total_rows; ++i) {
+            maxspecID += 1;
+            island_spec[rows_handled][0] = std::to_string(maxspecID);
+            island_spec[rows_handled][1] = std::to_string(init_end_spec_vec[i]);
+            island_spec[rows_handled][2] = std::to_string(timeval);
+            island_spec[rows_handled][3] = "A";
+            island_spec[rows_handled][4] = ""; // instead of NA
+            island_spec[rows_handled][5] = ""; // instead of NA
+            island_spec[rows_handled][6] = ""; // instead of NA
             rows_handled += 1;
         }
     }
@@ -87,7 +87,7 @@ Rcpp::List DAISIE_spec_tables_cpp(
         Rcpp::Named("init_nonend_spec") = init_nonend_spec,
         Rcpp::Named("init_end_spec") = init_end_spec,
         Rcpp::Named("mainland_spec") = mainland_spec,
-        Rcpp::Named("island_spec") = cppToR_intMat(island_spec),
+        Rcpp::Named("island_spec") = cppToR_strMat(island_spec),
         Rcpp::Named("maxspecID") = maxspecID
     );
 }
