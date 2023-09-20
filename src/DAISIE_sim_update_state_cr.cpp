@@ -46,7 +46,7 @@ Rcpp::List DAISIE_sim_update_state_cr_cpp(
         if (island_spec.size() != 0) { // if island not empty
 
             // check if colonist already there -- returns -1 when not present, and row index when present
-            spec_row_index = get_row_index_where_col_equals(island_spec, 0, colonist_str);
+            spec_row_index = get_row_index_where_col_equals_str(island_spec, 0, colonist_str);
 
         }
 
@@ -84,19 +84,23 @@ Rcpp::List DAISIE_sim_update_state_cr_cpp(
     } else if (possible_event == 3) { // ANAGENESIS
 
         // get row indexes of species that immigrated
-        std::vector<int> immi_row_indexes = {2, 5}; 
+        std::vector<int> immi_row_indexes = get_row_indexes_where_col_equals_str(island_spec, 3, "I");
 
+        std::string anagenesis_str;
         if (immi_row_indexes.size() > 1) {
-            auto anagenesis = sample2(immi_row_indexes, 1);
-        } else {
-            int anagenesis = immi_row_indexes[0];
+            // multiple species that immigrated, so we pick one
+            std::vector<int> anagenesis = Rcpp::as<std::vector<int>>(sample2(immi_row_indexes, 1));
+            anagenesis_str = std::to_string(anagenesis[0]);     
+        } else { // only one immigrated species on island
+            anagenesis_str = std::to_string(immi_row_indexes[0]);
         }
         maxspecID += 1;
 
-        // TODO for every row index in immi_row_indexes:
-        // TODO - set species type (index 3 of the species row) to "A"
-        // TODO - update species ID by setting index 0 of species row to maxspecID
-        // TODO - set index 6 of species row to "Immig_parent"
+        int spec_row_index = get_row_index_where_col_equals_str(island_spec, 0, anagenesis_str);
+
+        island_spec[spec_row_index][3] = "A";
+        island_spec[spec_row_index][0] = maxspecID;
+        island_spec[spec_row_index][6] = "Immig_parent";
 
     } else if (possible_event == 4) { // CLADOGENESIS
 

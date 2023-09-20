@@ -1,5 +1,4 @@
-#ifndef CPP_HELPER_FUNCS
-#define CPP_HELPER_FUNCS
+#pragma once
 
 #include <iostream>
 #include <vector>
@@ -10,7 +9,7 @@
 // TODO move functions that are not used by multiple files
 
 //' Retrieves row indexes where 
-inline int get_row_index_where_col_equals(
+int get_row_index_where_col_equals_str(
     std::vector<std::vector<std::string>> mat,
     int col_of_interest,
     std::string query) 
@@ -26,8 +25,24 @@ inline int get_row_index_where_col_equals(
     return rowIndex;
 }
 
+//' Retrieves row indexes where 
+std::vector<int> get_row_indexes_where_col_equals_str(
+    std::vector<std::vector<std::string>> mat,
+    int col_of_interest,
+    std::string query) 
+{
+    std::vector<int> rowIndexes;
+    for (int i = 0; i < mat.size(); ++i) {
+        std::vector<std::string> row = mat[i];
+        if (row[col_of_interest] == query) {
+            rowIndexes.push_back(i);
+        }
+    }
+    return rowIndexes;
+}
+
 // function that translates c++ integer vector to R
-inline Rcpp::IntegerVector cppToR_intVec(
+Rcpp::IntegerVector cppToR_intVec(
     std::vector<int> cppVec)
 {
     Rcpp::IntegerVector rVec;
@@ -38,7 +53,7 @@ inline Rcpp::IntegerVector cppToR_intVec(
 }
 
 // function that translates c++ integer matrix to R matrix
-inline Rcpp::IntegerMatrix cppToR_intMat(
+Rcpp::IntegerMatrix cppToR_intMat(
     std::vector<std::vector<int>> cppMat)
 {
     int numRows = cppMat.size();
@@ -60,5 +75,3 @@ inline Rcpp::IntegerMatrix cppToR_intMat(
     }
     return rMat;
 }
-
-#endif
