@@ -32,27 +32,25 @@ Rcpp::List DAISIE_sim_update_state_cr_cpp(
     int maxspecID,
     std::vector<int> mainland_spec,
     std::vector<std::vector<std::string>> island_spec,
-    std::vector<int> stt_table) 
+    std::vector<int> stt_table)
 {
+    std::cerr << "\BLYATTT" << std::endl;
+    std::cerr << stt_table[0] << std::endl;
+    std::cerr << stt_table[1] << std::endl;
+    std::cerr << stt_table[2] << std::endl;
+    std::cerr << stt_table[3] << std::endl;
+
     Rcpp::Function sample2 = Rcpp::Environment::namespace_env("DDD")["sample2"];
 
-    // IMMIGRATION //
-
-    if (possible_event == 1) { 
-        std::vector<int> colonist = Rcpp::as<std::vector<int>>(sample2(mainland_spec, 1)); // sample colonist
+    if (possible_event == 1) { // IMMIGRATION
+        std::vector<int> colonist = Rcpp::as<std::vector<int>>(sample2(mainland_spec, 1));
         std::string colonist_str = std::to_string(colonist[0]);
 
-        int spec_row_index;
-        if (island_spec.size() != 0) { // if island not empty
+        // check if colonist already there -- returns -1 when not present, and row index when present
+        int spec_row_index = get_row_index_where_col_equals_str(island_spec, 0, colonist_str);
 
-            // check if colonist already there -- returns -1 when not present, and row index when present
-            spec_row_index = get_row_index_where_col_equals_str(island_spec, 0, colonist_str);
-
-        }
-
-        // if colonist not yet on island
         if (spec_row_index == -1) {
-
+            // if colonist not yet on island
             // insert row into island_spec matrix
             int current_num_rows = island_spec.size();
             
@@ -64,10 +62,9 @@ Rcpp::List DAISIE_sim_update_state_cr_cpp(
             island_spec[current_num_rows][5] = ""; // instead of NA
             island_spec[current_num_rows][6] = ""; // instead of NA
         
-        } else { // already present on island
-
+        } else { 
+            // already present on island
             // replace row with updated row (new timeval etc)
-            // island_spec[isitthere, ] <- c(colonist, colonist, timeval, "I", NA, NA, NA)
             island_spec[spec_row_index][0] = colonist_str;
             island_spec[spec_row_index][1] = colonist_str;
             island_spec[spec_row_index][2] = std::to_string(timeval);
