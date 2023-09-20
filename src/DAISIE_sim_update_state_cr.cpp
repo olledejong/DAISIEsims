@@ -34,12 +34,6 @@ Rcpp::List DAISIE_sim_update_state_cr_cpp(
     std::vector<std::vector<std::string>> island_spec,
     std::vector<int> stt_table)
 {
-    std::cerr << "\BLYATTT" << std::endl;
-    std::cerr << stt_table[0] << std::endl;
-    std::cerr << stt_table[1] << std::endl;
-    std::cerr << stt_table[2] << std::endl;
-    std::cerr << stt_table[3] << std::endl;
-
     Rcpp::Function sample2 = Rcpp::Environment::namespace_env("DDD")["sample2"];
 
     if (possible_event == 1) { // IMMIGRATION
