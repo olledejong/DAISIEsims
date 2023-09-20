@@ -118,4 +118,60 @@ test_that("DAISIE_spec_tables_cpp produces correct output", {
     expect_equal(nonoceanic_tables$init_end_spec, 1)
     expect_equal(nonoceanic_tables$mainland_spec, expected_mainland_spec)
     expect_equal(nonoceanic_tables$island_spec, expected_island_spec)
+
+    res <- microbenchmark::microbenchmark(update_rates_cpp_version(), update_rates_r_version())
+    print(res)
+})
+
+
+test_that("Test speed difference between R and C++", {
+
+    mainland_n <- 100
+    total_time <- 1
+    timeval <- 0
+    init_nonend_spec <- 0
+    init_end_spec <- 0
+    mainland_spec <- 1:100
+    init_nonend_spec_vec <- 0
+    init_end_spec_vec <- 0
+    maxspecID <- mainland_n
+
+    nonoceanic_sample <- DAISIE_nonoceanic_spec_cpp(
+        0, # always zero when using DAISIE_sim_cr
+        0, # always zero when using DAISIE_sim_cr
+        mainland_n
+    )
+    island_spec <- c()
+    stt_table <- matrix(ncol = 4)
+    colnames(stt_table) <- c("Time", "nI", "nA", "nC")
+
+    # wrap both in R function to test speed
+    spec_tables_r_version <- function() {
+        spec_tables_r <- DAISIE_spec_tables(
+            stt_table,
+            total_time,
+            timeval,
+            nonoceanic_sample,
+            island_spec,
+            maxspecID
+        )
+    }
+
+    spec_tables_cpp_version <- function() {
+        spec_tables_cpp <- DAISIE_spec_tables_cpp(
+            total_time,
+            timeval,
+            init_nonend_spec,
+            init_end_spec,
+            mainland_spec,
+            init_nonend_spec_vec,
+            init_end_spec_vec,
+            maxspecID
+        )
+    }
+
+    res <- microbenchmark::microbenchmark(spec_tables_cpp_version(), spec_tables_r_version())
+    print(res)
+    
+    expect_true(mean(res$time[res$expr == "spec_tables_cpp_version()"]) < mean(res$time[res$expr == "spec_tables_r_version()"]))
 })
