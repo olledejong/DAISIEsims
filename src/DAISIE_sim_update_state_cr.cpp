@@ -194,6 +194,7 @@ Rcpp::List DAISIE_sim_update_state_cr_cpp(
                 "B",
                 std::to_string(timeval),
                 ""};
+            island_spec.push_back(new_spec);
         }
         maxspecID += 2;
     }
