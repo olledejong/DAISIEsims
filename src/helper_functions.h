@@ -80,6 +80,30 @@ inline Rcpp::StringMatrix getStrMatrixR(
     return rMat;
 }
 
+// TODO make type flexible
+inline Rcpp::NumericMatrix getNumericMatrixR(
+    std::vector<std::vector<double>> cppMat)
+{
+    int numRows = cppMat.size();
+    int numCols = cppMat[0].size();
+
+    if (numRows == 0 && numCols == 0)
+    {
+        return R_NilValue;
+    }
+
+    Rcpp::NumericMatrix rMat(numRows, numCols);
+
+    for (int i = 0; i < numRows; ++i)
+    { // loop rows
+        for (int j = 0; j < numCols; ++j)
+        {
+            rMat(i, j) = cppMat[i][j]; // set cell of matrix to correct value
+        }
+    }
+    return rMat;
+}
+
 // function that translates c++ string matrix to R an matrix
 inline std::vector<std::vector<std::string>> getStrMatrixCpp(
     Rcpp::StringMatrix rMat)
@@ -118,26 +142,20 @@ inline std::vector<std::vector<double>> getDoubleMatrixCpp(
     return cppMat;
 }
 
-// TODO make type flexible
-inline Rcpp::NumericMatrix getNumericMatrixR(
-    std::vector<std::vector<double>> cppMat)
+//' Finds the integers that are present in both vectors
+inline std::vector<int> getIntersectData(
+    std::vector<int> vec1,
+    std::vector<int> vec2)
 {
-    int numRows = cppMat.size();
-    int numCols = cppMat[0].size();
+    std::sort(vec1.begin(), vec1.end());
+    std::sort(vec2.begin(), vec2.end());
 
-    if (numRows == 0 && numCols == 0)
-    {
-        return R_NilValue;
-    }
-
-    Rcpp::NumericMatrix rMat(numRows, numCols);
-
-    for (int i = 0; i < numRows; ++i)
-    { // loop rows
-        for (int j = 0; j < numCols; ++j)
-        {
-            rMat(i, j) = cppMat[i][j]; // set cell of matrix to correct value
-        }
-    }
-    return rMat;
+    std::vector<int> common_data(vec1.size() + vec2.size());
+    std::vector<int>::iterator it, st;
+    it = std::set_intersection(vec1.begin(),
+                               vec1.end(),
+                               vec2.begin(),
+                               vec2.end(),
+                               common_data.begin());
+    return common_data;
 }

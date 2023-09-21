@@ -95,26 +95,28 @@ Rcpp::List DAISIE_sim_update_state_cr_cpp(
 
         // from all species, pick one that will go extinct
         std::vector<int> to_die = Rcpp::as<std::vector<int>>(sample2(island_spec_ids, 1));
-        std::string to_die_str = std::to_string(to_die[0]);
+        int to_die_index = to_die[0];
 
-        int spec_row_index = getRowIndexForQuery(island_spec, 0, to_die_str);
-
-        std::string species_type = island_spec[spec_row_index][3];
+        std::string species_type = island_spec[to_die_index][3];
 
         // remove immigrant or anagenetic
         if (species_type == "I" || species_type == "A")
         {
-            island_spec.erase(island_spec.begin() + spec_row_index);
+            island_spec.erase(island_spec.begin() + to_die_index);
         }
 
         // remove cladogenetic
         if (species_type == "C")
         {
             // find all indexes where
-            std::vector<int> sameInColOne = getRowIndexesForQuery(island_spec, 1, island_spec[spec_row_index][1]);
-            std::vector<int> sameInColTwo = getRowIndexesForQuery(island_spec, 2, island_spec[spec_row_index][2]);
+            std::vector<int> sameInColOne = getRowIndexesForQuery(island_spec, 1, island_spec[to_die_index][1]);
+            std::vector<int> sameInColTwo = getRowIndexesForQuery(island_spec, 2, island_spec[to_die_index][2]);
 
-            // TODO find overlap between sameInColOne and sameInColTwo
+            std::vector<int> sisters = getIntersectData(sameInColOne, sameInColTwo);
+
+            // now we have the sister indexes
+
+            // get indexes of species that are != to_die_index
         }
 
         // TODO implement extinction event
