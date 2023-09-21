@@ -106,24 +106,28 @@ DAISIE_sim_core_cr <- function(
         rates$ana_rate,
         rates$clado_rate
       )
-      # DAISIE_sim_update_state_cr_cpp(
-      #   timeval,
-      #   total_time,
-      #   possible_event,
-      #   maxspecID,
-      #   mainland_spec,
-      #   island_spec,
-      #   stt_table
-      # )
-      updated_state <- DAISIE_sim_update_state_cr(
-        timeval = timeval,
-        total_time = total_time,
-        possible_event = possible_event,
-        maxspecID = maxspecID,
-        mainland_spec = mainland_spec,
-        island_spec = island_spec,
-        stt_table = stt_table
+
+      if (is.null(island_spec)) {
+        island_spec <- matrix("", nrow=1, ncol=1)
+      }
+      updated_state <- DAISIE_sim_update_state_cr_cpp(
+        timeval,
+        total_time,
+        possible_event,
+        maxspecID,
+        mainland_spec,
+        stt_table,
+        island_spec
       )
+      # updated_state <- DAISIE_sim_update_state_cr(
+      #   timeval = timeval,
+      #   total_time = total_time,
+      #   possible_event = possible_event,
+      #   maxspecID = maxspecID,
+      #   mainland_spec = mainland_spec,
+      #   island_spec = island_spec,
+      #   stt_table = stt_table
+      # )
 
       island_spec <- updated_state$island_spec
       maxspecID <- updated_state$maxspecID

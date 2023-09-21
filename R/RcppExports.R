@@ -186,8 +186,8 @@ DAISIE_sample_event_cr_cpp <- function(immig_rate, ext_rate, ana_rate, clado_rat
 #' @seealso \link{DAISIE_sim_core_cr},
 #' \link{DAISIE_sim_update_state_cr}
 #' @export
-DAISIE_sim_update_state_cr_cpp <- function(timeval, total_time, possible_event, maxspecID, mainland_spec, island_spec, stt_table) {
-    .Call(`_DAISIEsims_DAISIE_sim_update_state_cr_cpp`, timeval, total_time, possible_event, maxspecID, mainland_spec, island_spec, stt_table)
+DAISIE_sim_update_state_cr_cpp <- function(timeval, total_time, possible_event, maxspecID, mainland_spec, stt_table_r, island_spec_r) {
+    .Call(`_DAISIEsims_DAISIE_sim_update_state_cr_cpp`, timeval, total_time, possible_event, maxspecID, mainland_spec, stt_table_r, island_spec_r)
 }
 
 #' Update internal Gillespie bookeeping objects

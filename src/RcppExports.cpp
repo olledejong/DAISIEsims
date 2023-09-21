@@ -63,8 +63,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // DAISIE_sim_update_state_cr_cpp
-Rcpp::List DAISIE_sim_update_state_cr_cpp(double timeval, int total_time, int possible_event, int maxspecID, std::vector<int> mainland_spec, std::vector<std::vector<std::string>> island_spec, std::vector<int> stt_table);
-RcppExport SEXP _DAISIEsims_DAISIE_sim_update_state_cr_cpp(SEXP timevalSEXP, SEXP total_timeSEXP, SEXP possible_eventSEXP, SEXP maxspecIDSEXP, SEXP mainland_specSEXP, SEXP island_specSEXP, SEXP stt_tableSEXP) {
+Rcpp::List DAISIE_sim_update_state_cr_cpp(double timeval, int total_time, int possible_event, int maxspecID, std::vector<int> mainland_spec, Rcpp::NumericMatrix stt_table_r, Rcpp::StringMatrix island_spec_r);
+RcppExport SEXP _DAISIEsims_DAISIE_sim_update_state_cr_cpp(SEXP timevalSEXP, SEXP total_timeSEXP, SEXP possible_eventSEXP, SEXP maxspecIDSEXP, SEXP mainland_specSEXP, SEXP stt_table_rSEXP, SEXP island_spec_rSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -73,9 +73,9 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type possible_event(possible_eventSEXP);
     Rcpp::traits::input_parameter< int >::type maxspecID(maxspecIDSEXP);
     Rcpp::traits::input_parameter< std::vector<int> >::type mainland_spec(mainland_specSEXP);
-    Rcpp::traits::input_parameter< std::vector<std::vector<std::string>> >::type island_spec(island_specSEXP);
-    Rcpp::traits::input_parameter< std::vector<int> >::type stt_table(stt_tableSEXP);
-    rcpp_result_gen = Rcpp::wrap(DAISIE_sim_update_state_cr_cpp(timeval, total_time, possible_event, maxspecID, mainland_spec, island_spec, stt_table));
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type stt_table_r(stt_table_rSEXP);
+    Rcpp::traits::input_parameter< Rcpp::StringMatrix >::type island_spec_r(island_spec_rSEXP);
+    rcpp_result_gen = Rcpp::wrap(DAISIE_sim_update_state_cr_cpp(timeval, total_time, possible_event, maxspecID, mainland_spec, stt_table_r, island_spec_r));
     return rcpp_result_gen;
 END_RCPP
 }

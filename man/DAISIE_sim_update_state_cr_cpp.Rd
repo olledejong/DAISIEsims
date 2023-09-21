@@ -10,8 +10,8 @@ DAISIE_sim_update_state_cr_cpp(
   possible_event,
   maxspecID,
   mainland_spec,
-  island_spec,
-  stt_table
+  stt_table_r,
+  island_spec_r
 )
 }
 \arguments{
@@ -25,11 +25,6 @@ units.}
 \item{maxspecID}{Current species IDs.}
 
 \item{mainland_spec}{Number of mainland species.}
-
-\item{island_spec}{Matrix with current state of simulation containing number
-of species.}
-
-\item{stt_table}{Matrix with number of species at each time step.}
 }
 \value{
 The updated state of the system, which is a list with the

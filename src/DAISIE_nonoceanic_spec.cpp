@@ -47,8 +47,8 @@ Rcpp::List DAISIE_nonoceanic_spec_cpp(
     return Rcpp::List::create(
         Rcpp::Named("init_nonend_spec") = init_nonend_spec,
         Rcpp::Named("init_end_spec") = init_end_spec,
-        Rcpp::Named("init_nonend_spec_vec") = cppToR_intVec(init_nonend_spec_vec),
-        Rcpp::Named("init_end_spec_vec") = cppToR_intVec(init_end_spec_vec),
-        Rcpp::Named("mainland_spec") = cppToR_intVec(mainland_spec)
+        Rcpp::Named("init_nonend_spec_vec") = getIntVecR(init_nonend_spec_vec),
+        Rcpp::Named("init_end_spec_vec") = getIntVecR(init_end_spec_vec),
+        Rcpp::Named("mainland_spec") = getIntVecR(mainland_spec)
     );
 }
