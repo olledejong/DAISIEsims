@@ -98,7 +98,7 @@ DAISIE_sim_core_cr <- function(
         0, # island ontogeny
         0  # sea level
       )
-      testit::assert(are_rates(rates)) # NOTE are_rates is very slow (delete when whole while-loop becomes C++)
+      testit::assert(are_rates(rates)) # NOTE are_rates is very slow --> remove when possible
 
       possible_event <- DAISIE_sample_event_cr_cpp(
         rates$immig_rate,
@@ -125,15 +125,6 @@ DAISIE_sim_core_cr <- function(
         stt_table,
         island_spec
       )
-      # updated_state <- DAISIE_sim_update_state_cr(
-      #   timeval = timeval,
-      #   total_time = total_time,
-      #   possible_event = possible_event,
-      #   maxspecID = maxspecID,
-      #   mainland_spec = mainland_spec,
-      #   island_spec = island_spec,
-      #   stt_table = stt_table
-      # )
 
       island_spec <- updated_state$island_spec
       maxspecID <- updated_state$maxspecID

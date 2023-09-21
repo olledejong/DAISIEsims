@@ -49,7 +49,6 @@ Rcpp::List DAISIE_sim_update_state_cr_cpp(
     // translate stt_table into C++ equivalent (the column names will be added back later)
     std::vector<std::vector<double>> stt_table = getDoubleMatrixCpp(stt_table_r);
 
-    std::cerr << "Possible_event: " << possible_event << std::endl;
     if (possible_event == 1)
     { // IMMIGRATION
         std::vector<int> colonist = Rcpp::as<std::vector<int>>(sample2(mainland_spec, 1));
