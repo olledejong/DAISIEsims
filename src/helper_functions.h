@@ -49,7 +49,8 @@ inline Rcpp::IntegerVector getIntVecR(
     std::vector<int> cppVec)
 {
     Rcpp::IntegerVector rVec;
-    for (int i = 0; i < cppVec.size(); ++i) {
+    for (int i = 0; i < cppVec.size(); ++i)
+    {
         rVec.push_back(cppVec[i]);
     }
     return rVec;

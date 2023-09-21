@@ -39,22 +39,24 @@ Rcpp::List DAISIE_spec_tables_cpp(
 
     // No rows to add
 
-    if (init_nonend_spec == 0 && init_end_spec == 0) {
+    if (init_nonend_spec == 0 && init_end_spec == 0)
+    {
         return Rcpp::List::create(
             Rcpp::Named("stt_table") = stt_table,
             Rcpp::Named("init_nonend_spec") = init_nonend_spec,
             Rcpp::Named("init_end_spec") = init_end_spec,
             Rcpp::Named("mainland_spec") = mainland_spec,
             Rcpp::Named("island_spec") = R_NilValue,
-            Rcpp::Named("maxspecID") = maxspecID
-        );
+            Rcpp::Named("maxspecID") = maxspecID);
     }
 
     // Rows have to be added
-    std::vector<std::vector<std::string>> island_spec; 
-    
-    if (init_nonend_spec != 0) { // if we need to add a non-endemic row
-        for (int i = 0; i < init_nonend_spec; ++i) {
+    std::vector<std::vector<std::string>> island_spec;
+
+    if (init_nonend_spec != 0)
+    { // if we need to add a non-endemic row
+        for (int i = 0; i < init_nonend_spec; ++i)
+        {
             std::vector<std::string> new_row{
                 std::to_string(init_nonend_spec_vec[i]),
                 std::to_string(init_nonend_spec_vec[i]),
@@ -68,8 +70,10 @@ Rcpp::List DAISIE_spec_tables_cpp(
         }
     }
 
-    if (init_end_spec != 0) { // if we need to add a endemic row
-        for (int i = 0; i < init_end_spec; ++i) {
+    if (init_end_spec != 0)
+    { // if we need to add a endemic row
+        for (int i = 0; i < init_end_spec; ++i)
+        {
             maxspecID += 1;
             std::vector<std::string> new_row{
                 std::to_string(maxspecID),
@@ -90,6 +94,5 @@ Rcpp::List DAISIE_spec_tables_cpp(
         Rcpp::Named("init_end_spec") = init_end_spec,
         Rcpp::Named("mainland_spec") = mainland_spec,
         Rcpp::Named("island_spec") = getStrMatrixR(island_spec),
-        Rcpp::Named("maxspecID") = maxspecID
-    );
+        Rcpp::Named("maxspecID") = maxspecID);
 }

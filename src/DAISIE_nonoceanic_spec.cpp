@@ -27,14 +27,14 @@ Rcpp::List DAISIE_nonoceanic_spec_cpp(
     // Make accessable for List creation
     int init_nonend_spec = 0;
     int init_end_spec = 0;
-    std::vector<int> init_nonend_spec_vec {0};
-    std::vector<int> init_end_spec_vec {0};
+    std::vector<int> init_nonend_spec_vec{0};
+    std::vector<int> init_end_spec_vec{0};
     std::vector<int> mainland_spec(mainland_n);
 
     if (prob_samp != 0)
     {
-        // TODO implement when prob of sampling from mainland pool is not zero
         // NOTE always zero when using DAISIE_sim_cr, for now implementation not needed
+        // TODO implement when prob of sampling from mainland pool is not zero
     }
     else
     {
@@ -49,6 +49,5 @@ Rcpp::List DAISIE_nonoceanic_spec_cpp(
         Rcpp::Named("init_end_spec") = init_end_spec,
         Rcpp::Named("init_nonend_spec_vec") = getIntVecR(init_nonend_spec_vec),
         Rcpp::Named("init_end_spec_vec") = getIntVecR(init_end_spec_vec),
-        Rcpp::Named("mainland_spec") = getIntVecR(mainland_spec)
-    );
+        Rcpp::Named("mainland_spec") = getIntVecR(mainland_spec));
 }

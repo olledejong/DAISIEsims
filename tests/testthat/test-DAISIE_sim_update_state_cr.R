@@ -106,12 +106,6 @@ test_that("DAISIE_sim_update_state C++; variable events", {
     maxspecID_r <- updated_state_r$maxspecID
     stt_table_r <- updated_state_r$stt_table
 
-    prmatrix(stt_table_cpp)
-    prmatrix(stt_table_r)
-    cat("\n\n")
-    prmatrix(island_spec_cpp)
-    prmatrix(island_spec_r)
-
     # NOTE bit hard to test, because; R seed != C++ seed
 
     expect_true(is.matrix(island_spec_cpp))
@@ -219,12 +213,6 @@ test_that("DAISIE_sim_update_state C++; cladogenesis event", {
     island_spec_r <- updated_state_r$island_spec
     maxspecID_r <- updated_state_r$maxspecID
     stt_table_r <- updated_state_r$stt_table
-
-    prmatrix(stt_table_cpp)
-    prmatrix(stt_table_r)
-    cat("\n\n")
-    prmatrix(island_spec_cpp)
-    prmatrix(island_spec_r)
 
     # NOTE bit hard to test, because; R seed != C++ seed
 

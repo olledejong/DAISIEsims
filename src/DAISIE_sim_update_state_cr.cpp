@@ -42,7 +42,8 @@ Rcpp::List DAISIE_sim_update_state_cr_cpp(
     std::vector<std::vector<std::string>> island_spec;
     // if island not empty, translate R matrix into C++ matrix;
 
-    if (island_spec_r.ncol() != 2) {
+    if (island_spec_r.ncol() != 2)
+    {
         island_spec = getStrMatrixCpp(island_spec_r);
     }
 
@@ -100,14 +101,16 @@ Rcpp::List DAISIE_sim_update_state_cr_cpp(
 
         std::string species_type = island_spec[spec_row_index][3];
 
-         // remove immigrant or anagenetic
-        if (species_type == "I" || species_type == "A") {
+        // remove immigrant or anagenetic
+        if (species_type == "I" || species_type == "A")
+        {
             island_spec.erase(island_spec.begin() + spec_row_index);
-        } 
+        }
 
         // remove cladogenetic
-        if (species_type == "C") {
-            // find all indexes where 
+        if (species_type == "C")
+        {
+            // find all indexes where
             std::vector<int> sameInColOne = getRowIndexesForQuery(island_spec, 1, island_spec[spec_row_index][1]);
             std::vector<int> sameInColTwo = getRowIndexesForQuery(island_spec, 2, island_spec[spec_row_index][2]);
 
@@ -121,7 +124,8 @@ Rcpp::List DAISIE_sim_update_state_cr_cpp(
         // get row indexes of species that immigrated
         std::vector<int> immi_row_indexes = getRowIndexesForQuery(island_spec, 3, "I");
 
-        if (immi_row_indexes.size() != 0) {
+        if (immi_row_indexes.size() != 0)
+        {
             int anagenesis_index;
             // we only allow immigrants to undergo anagenesis (so do nothing when immi_row_indexes.size() == 0)
             if (immi_row_indexes.size() > 1)
@@ -130,7 +134,7 @@ Rcpp::List DAISIE_sim_update_state_cr_cpp(
                 std::vector<int> anagenesis = Rcpp::as<std::vector<int>>(sample2(immi_row_indexes, 1));
                 anagenesis_index = anagenesis[0];
             }
-            
+
             if (immi_row_indexes.size() == 1)
             { // only one immigrated species on island
                 anagenesis_index = immi_row_indexes[0];
@@ -145,7 +149,7 @@ Rcpp::List DAISIE_sim_update_state_cr_cpp(
     else if (possible_event == 4)
     { // CLADOGENESIS
 
-        // get the number of species that are on the island 
+        // get the number of species that are on the island
         std::vector<int> island_spec_ids(island_spec.size());
         // generate a list that holds all possible row indexes (read species)
         std::iota(island_spec_ids.begin(), island_spec_ids.end(), 0);
@@ -177,15 +181,14 @@ Rcpp::List DAISIE_sim_update_state_cr_cpp(
         }
         else
         { // species that speciates is not cladogenetic
-
-            // daughter A
+            // daughter A - update existing species row
             island_spec[to_split_index][3] = "C";
             island_spec[to_split_index][0] = std::to_string(maxspecID + 1);
             island_spec[to_split_index][4] = "A";
             island_spec[to_split_index][5] = island_spec[to_split_index][2];
             island_spec[to_split_index][6] = "";
 
-            // daughter B
+            // daughter B - add new species row
             std::vector<std::string> new_spec{
                 std::to_string(maxspecID + 2),
                 island_spec[to_split_index][1],
@@ -199,19 +202,22 @@ Rcpp::List DAISIE_sim_update_state_cr_cpp(
         maxspecID += 2;
     }
     // add stt_table row for this time-step
-    
+
+    // prepare date for new row
     double time = total_time - timeval;
     double num_Is = getRowIndexesForQuery(island_spec, 3, "I").size();
     double num_As = getRowIndexesForQuery(island_spec, 3, "A").size();
     double num_Cs = getRowIndexesForQuery(island_spec, 3, "C").size();
-    std::vector<double> new_stt_table_row{
-        time,
-        num_Is,
-        num_As,
-        num_Cs};
-    stt_table.push_back(new_stt_table_row);
+    std::vector<double> new_stt_table_row{// create row
+                                          time,
+                                          num_Is,
+                                          num_As,
+                                          num_Cs};
+    stt_table.push_back(new_stt_table_row); // add row
+
+    // translate from C++ matrix to R matrix
     Rcpp::NumericMatrix stt_table_updated = getNumericMatrixR(stt_table);
-    colnames(stt_table_updated) = colnames(stt_table_r);
+    colnames(stt_table_updated) = colnames(stt_table_r); // add col names
 
     // return all data
     return Rcpp::List::create(
