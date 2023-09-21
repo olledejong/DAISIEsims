@@ -119,7 +119,7 @@ Rcpp::List DAISIE_sim_update_state_cr_cpp(
             // get indexes of species that are != to_die_index
         }
 
-        // TODO implement extinction event
+        // TODO implement rest of extinction event
     }
     else if (possible_event == 3)
     { // ANAGENESIS
