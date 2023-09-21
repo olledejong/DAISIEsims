@@ -108,7 +108,7 @@ DAISIE_sim_core_cr <- function(
       )
 
       # TODO remove this if-statement after implementing extinction rate in DAISIE_sim_update_state_cr.cpp
-      if (possible_event == 3) {
+      if (possible_event == 2) {
         possible_event <- 1
       }
 
