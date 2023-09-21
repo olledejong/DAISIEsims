@@ -51,7 +51,6 @@ Rcpp::List DAISIE_spec_tables_cpp(
     }
 
     // Rows have to be added
-    int total_rows = init_nonend_spec + init_end_spec;
     std::vector<std::vector<std::string>> island_spec; 
     
     if (init_nonend_spec != 0) { // if we need to add a non-endemic row

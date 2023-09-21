@@ -24,6 +24,7 @@
 //' @seealso \link{DAISIE_sim_core_cr},
 //' \link{DAISIE_sim_update_state_cr}
 //' @export
+// [[Rcpp::depends(DDD)]]
 // [[Rcpp::export]]
 Rcpp::List DAISIE_sim_update_state_cr_cpp(
     double timeval,
@@ -40,13 +41,15 @@ Rcpp::List DAISIE_sim_update_state_cr_cpp(
     // create empty storage vector for island species
     std::vector<std::vector<std::string>> island_spec;
     // if island not empty, translate R matrix into C++ matrix;
-    if (island_spec_r.nrow() != 1 && island_spec_r.ncol() != 1) {
-        std::vector<std::vector<std::string>> island_spec = getStrMatrixCpp(island_spec_r);
+
+    if (island_spec_r.ncol() != 2) {
+        island_spec = getStrMatrixCpp(island_spec_r);
     }
 
     // translate stt_table into C++ equivalent (the column names will be added back later)
     std::vector<std::vector<double>> stt_table = getDoubleMatrixCpp(stt_table_r);
 
+    std::cerr << "Possible_event: " << possible_event << std::endl;
     if (possible_event == 1)
     { // IMMIGRATION
         std::vector<int> colonist = Rcpp::as<std::vector<int>>(sample2(mainland_spec, 1));
@@ -98,63 +101,75 @@ Rcpp::List DAISIE_sim_update_state_cr_cpp(
 
         std::string species_type = island_spec[spec_row_index][3];
 
+         // remove immigrant or anagenetic
+        if (species_type == "I" || species_type == "A") {
+            island_spec.erase(island_spec.begin() + spec_row_index);
+        } 
+
+        // remove cladogenetic
+        if (species_type == "C") {
+            // find all indexes where 
+            std::vector<int> sameInColOne = getRowIndexesForQuery(island_spec, 1, island_spec[spec_row_index][1]);
+            std::vector<int> sameInColTwo = getRowIndexesForQuery(island_spec, 2, island_spec[spec_row_index][2]);
+
+            // TODO find overlap between sameInColOne and sameInColTwo
+        }
+
         // TODO implement extinction event
     }
     else if (possible_event == 3)
     { // ANAGENESIS
-
         // get row indexes of species that immigrated
         std::vector<int> immi_row_indexes = getRowIndexesForQuery(island_spec, 3, "I");
 
-        std::string anagenesis_str;
-        if (immi_row_indexes.size() > 1)
-        {
-            // multiple species that immigrated, so we pick one
-            std::vector<int> anagenesis = Rcpp::as<std::vector<int>>(sample2(immi_row_indexes, 1));
-            anagenesis_str = std::to_string(anagenesis[0]);
-        }
-        else
-        { // only one immigrated species on island
-            anagenesis_str = std::to_string(immi_row_indexes[0]);
-        }
-        maxspecID += 1;
+        if (immi_row_indexes.size() != 0) {
+            int anagenesis_index;
+            // we only allow immigrants to undergo anagenesis (so do nothing when immi_row_indexes.size() == 0)
+            if (immi_row_indexes.size() > 1)
+            {
+                // multiple species that immigrated, so we pick one
+                std::vector<int> anagenesis = Rcpp::as<std::vector<int>>(sample2(immi_row_indexes, 1));
+                anagenesis_index = anagenesis[0];
+            }
+            
+            if (immi_row_indexes.size() == 1)
+            { // only one immigrated species on island
+                anagenesis_index = immi_row_indexes[0];
+            }
+            maxspecID += 1;
 
-        int spec_row_index = getRowIndexForQuery(island_spec, 0, anagenesis_str);
-
-        island_spec[spec_row_index][3] = "A";
-        island_spec[spec_row_index][0] = std::to_string(maxspecID);
-        island_spec[spec_row_index][6] = "Immig_parent";
+            island_spec[anagenesis_index][3] = "A";
+            island_spec[anagenesis_index][0] = std::to_string(maxspecID);
+            island_spec[anagenesis_index][6] = "Immig_parent";
+        }
     }
     else if (possible_event == 4)
     { // CLADOGENESIS
 
+        // get the number of species that are on the island 
         std::vector<int> island_spec_ids(island_spec.size());
-        std::iota(island_spec_ids.begin(), island_spec_ids.end(), 1);
+        // generate a list that holds all possible row indexes (read species)
+        std::iota(island_spec_ids.begin(), island_spec_ids.end(), 0);
 
         // from all species, pick one that will undergo cladogenesis
         std::vector<int> to_split = Rcpp::as<std::vector<int>>(sample2(island_spec_ids, 1));
-        std::string to_split_str = std::to_string(to_split[0]);
-
-        // get row index of this species
-        int spec_row_index = getRowIndexForQuery(island_spec, 0, to_split_str);
+        int to_split_index = to_split[0];
 
         // if species that speciates is cladogenetic
-        if (island_spec[spec_row_index][3] == "C")
+        if (island_spec[to_split_index][3] == "C")
         {
+            // daughter A - update existing species row
+            island_spec[to_split_index][3] = "C";
+            island_spec[to_split_index][0] = std::to_string(maxspecID + 1);
+            std::string old_status = island_spec[to_split_index][4];
+            island_spec[to_split_index][4] = old_status + "A";
+            island_spec[to_split_index][6] = "";
 
-            // daughter A
-            island_spec[spec_row_index][3] = "C";
-            island_spec[spec_row_index][0] = std::to_string(maxspecID + 1);
-            std::string old_status = island_spec[spec_row_index][4];
-            island_spec[spec_row_index][4] = old_status + "A";
-            island_spec[spec_row_index][6] = "";
-
-            // daughter B
-            // add row to matrix
+            // daughter B - add new species row
             std::vector<std::string> new_spec{
                 std::to_string(maxspecID + 2),
-                island_spec[spec_row_index][1],
-                island_spec[spec_row_index][2],
+                island_spec[to_split_index][1],
+                island_spec[to_split_index][2],
                 "C",
                 old_status + "B",
                 std::to_string(timeval),
@@ -165,17 +180,17 @@ Rcpp::List DAISIE_sim_update_state_cr_cpp(
         { // species that speciates is not cladogenetic
 
             // daughter A
-            island_spec[spec_row_index][3] = "C";
-            island_spec[spec_row_index][0] = std::to_string(maxspecID + 1);
-            island_spec[spec_row_index][4] = "A";
-            island_spec[spec_row_index][5] = island_spec[spec_row_index][2];
-            island_spec[spec_row_index][6] = "";
+            island_spec[to_split_index][3] = "C";
+            island_spec[to_split_index][0] = std::to_string(maxspecID + 1);
+            island_spec[to_split_index][4] = "A";
+            island_spec[to_split_index][5] = island_spec[to_split_index][2];
+            island_spec[to_split_index][6] = "";
 
             // daughter B
             std::vector<std::string> new_spec{
                 std::to_string(maxspecID + 2),
-                island_spec[spec_row_index][1],
-                island_spec[spec_row_index][2],
+                island_spec[to_split_index][1],
+                island_spec[to_split_index][2],
                 "C",
                 "B",
                 std::to_string(timeval),
@@ -183,9 +198,8 @@ Rcpp::List DAISIE_sim_update_state_cr_cpp(
         }
         maxspecID += 2;
     }
-
     // add stt_table row for this time-step
-
+    
     double time = total_time - timeval;
     double num_Is = getRowIndexesForQuery(island_spec, 3, "I").size();
     double num_As = getRowIndexesForQuery(island_spec, 3, "A").size();
@@ -200,7 +214,6 @@ Rcpp::List DAISIE_sim_update_state_cr_cpp(
     colnames(stt_table_updated) = colnames(stt_table_r);
 
     // return all data
-
     return Rcpp::List::create(
         Rcpp::Named("island_spec") = getStrMatrixR(island_spec),
         Rcpp::Named("maxspecID") = maxspecID,

@@ -169,23 +169,6 @@ DAISIE_sample_event_cr_cpp <- function(immig_rate, ext_rate, ana_rate, clado_rat
     .Call(`_DAISIEsims_DAISIE_sample_event_cr_cpp`, immig_rate, ext_rate, ana_rate, clado_rate)
 }
 
-#' Updates state of island given sampled event for a constant rate case.
-#'
-#' Makes the event happen by updating island species matrix and species IDs.
-#' What event happens is determined by the sampling in the algorithm.
-#'
-#' @inheritParams default_params_doc
-#'
-#' @return The updated state of the system, which is a list with the
-#' \code{island_spec} matrix, an integer \code{maxspecID} with the most recent
-#' ID of species and the \code{stt_table}, a matrix with the current species
-#' through time table.
-#'
-#' @keywords internal
-#'
-#' @seealso \link{DAISIE_sim_core_cr},
-#' \link{DAISIE_sim_update_state_cr}
-#' @export
 DAISIE_sim_update_state_cr_cpp <- function(timeval, total_time, possible_event, maxspecID, mainland_spec, stt_table_r, island_spec_r) {
     .Call(`_DAISIEsims_DAISIE_sim_update_state_cr_cpp`, timeval, total_time, possible_event, maxspecID, mainland_spec, stt_table_r, island_spec_r)
 }

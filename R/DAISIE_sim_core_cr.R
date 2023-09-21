@@ -107,8 +107,14 @@ DAISIE_sim_core_cr <- function(
         rates$clado_rate
       )
 
+      # TODO remove this if-statement after implementing extinction rate in DAISIE_sim_update_state_cr.cpp
+      if (possible_event == 3) {
+        possible_event <- 1
+      }
+
+      # NOTE if-statement needed to distinguish first loop from others, needs prettier solution
       if (is.null(island_spec)) {
-        island_spec <- matrix("", nrow=1, ncol=1)
+        island_spec <- matrix("x", nrow=1, ncol=2)
       }
       updated_state <- DAISIE_sim_update_state_cr_cpp(
         timeval,
