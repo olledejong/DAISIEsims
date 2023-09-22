@@ -1,5 +1,5 @@
-// #pragma once
-// ^ seems to not be working ^ --- neither does #ifndef
+#ifndef __HELPER_FUNCTIONS__
+#define __HELPER_FUNCTIONS__
 
 #include <iostream>
 #include <vector>
@@ -159,3 +159,5 @@ inline std::vector<int> getIntersectData(
                                common_data.begin());
     return common_data;
 }
+
+#endif // __HELPER_FUNCTIONS__
