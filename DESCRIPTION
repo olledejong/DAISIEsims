@@ -1,15 +1,19 @@
 Package: DAISIEsims
 Type: Package
-Title: Copy of DAISIE package where functions are sped up using Rcpp
+Title: Partial fork of DAISIE where functions are sped up using Rcpp
 Version: 1.0
-Date: 2023-09-04
+Date: 2023-09-22
 Author: Olle de Jong
 Maintainer: Olle de Jong <o.de.jong.4@student.rug.nl>
-Description: Copy of DAISIE package where functions are sped up using Rcpp
+Description: Partial fork of DAISIE where functions are sped up using Rcpp
 License: GPL (>= 2)
 Encoding: UTF-8
-Imports: Rcpp (>= 1.0.11)
-Depends: DDD
+Depends: R (>= 4.2.0)
+Imports: 
+    Rcpp (>= 1.0.11),
+    DDD (>= 5.0)
 Suggests: testthat
 LinkingTo: Rcpp
+NeedsCompilation: yes
+SystemRequirements: C++17
 RoxygenNote: 7.2.3
