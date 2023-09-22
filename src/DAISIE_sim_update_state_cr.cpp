@@ -41,7 +41,8 @@ Rcpp::List DAISIE_sim_update_state_cr_cpp(
     std::vector<std::vector<std::string>> island_spec;
     // if island not empty, translate R matrix into C++ matrix;
 
-    if (island_spec_r.ncol() != 2) island_spec = getStrMatrixCpp(island_spec_r);
+    if (island_spec_r.ncol() != 2)
+        island_spec = getStrMatrixCpp(island_spec_r);
 
     // translate stt_table into C++ equivalent (the column names will be added back later)
     std::vector<std::vector<double>> stt_table = getDoubleMatrixCpp(stt_table_r);
@@ -83,32 +84,47 @@ Rcpp::List DAISIE_sim_update_state_cr_cpp(
 
         // create vector containing the ids of all species on island
         std::vector<int> island_spec_ids(island_spec.size());
-        std::iota(island_spec_ids.begin(), island_spec_ids.end(), 1);
+        std::iota(island_spec_ids.begin(), island_spec_ids.end(), 0);
 
         // from all species, pick one that will go extinct
-        std::vector<int> to_die = Rcpp::as<std::vector<int>>(sample2(island_spec_ids, 1));
-        int to_die_index = to_die[0];
+        std::vector<int> extinct = Rcpp::as<std::vector<int>>(sample2(island_spec_ids, 1));
+        int extinct_index = extinct[0];
 
-        std::string species_type = island_spec[to_die_index][3];
+        std::string species_type = island_spec[extinct_index][3];
 
         // remove immigrant or anagenetic
         if (species_type == "I" || species_type == "A")
         {
-            island_spec.erase(island_spec.begin() + to_die_index);
+            island_spec.erase(island_spec.begin() + extinct_index);
         }
 
         // remove cladogenetic
         if (species_type == "C")
         {
-            // find all indexes where
-            std::vector<int> sameInColOne = getRowIndexesForQuery(island_spec, 1, island_spec[to_die_index][1]);
-            std::vector<int> sameInColTwo = getRowIndexesForQuery(island_spec, 2, island_spec[to_die_index][2]);
+            // find species with the same ancestor AND arrival total_time --> sisters
+            // if they are != extinct_index, they are survivors
+            std::vector<int> sisters;
+            std::vector<int> survivors;
+            for (int i = 0; i < island_spec.size(); i++)
+            {
+                if (island_spec[i][1] == island_spec[extinct_index][1] &&
+                    island_spec[i][2] == island_spec[extinct_index][2])
+                {   
+                    sisters.push_back(i);
+                    if (i != extinct_index) survivors.push_back(i);
+                }
+            }
 
-            std::vector<int> sisters = getIntersectData(sameInColOne, sameInColTwo);
-
-            // now we have the sister indexes
-
-            // get indexes of species that are != to_die_index
+            if (sisters.size() == 2) {
+                // set all survivors to anagenetic and mention that clado is extinct
+                for (int survivor : survivors) {
+                    island_spec[survivor][3] = "A";
+                    island_spec[survivor][4] = "";
+                    island_spec[survivor][5] = "";
+                    island_spec[survivor][6] = "Clado_extinct";
+                }
+                island_spec.erase(island_spec.begin() + extinct_index);
+            }
         }
 
         // TODO implement rest of extinction event
