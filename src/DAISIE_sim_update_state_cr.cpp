@@ -41,10 +41,7 @@ Rcpp::List DAISIE_sim_update_state_cr_cpp(
     std::vector<std::vector<std::string>> island_spec;
     // if island not empty, translate R matrix into C++ matrix;
 
-    if (island_spec_r.ncol() != 2)
-    {
-        island_spec = getStrMatrixCpp(island_spec_r);
-    }
+    if (island_spec_r.ncol() != 2) island_spec = getStrMatrixCpp(island_spec_r);
 
     // translate stt_table into C++ equivalent (the column names will be added back later)
     std::vector<std::vector<double>> stt_table = getDoubleMatrixCpp(stt_table_r);
@@ -61,15 +58,11 @@ Rcpp::List DAISIE_sim_update_state_cr_cpp(
         {
             // if colonist not yet on island
             // insert row into island_spec matrix
-            std::vector<std::string> new_spec{
-                colonist_str,
-                colonist_str,
-                std::to_string(timeval),
-                "I",
-                "", // instead of NA
-                "", // instead of NA
-                ""  // instead of NA
-            };
+            std::vector<std::string> new_spec(7, "");
+            new_spec[0] = colonist_str;
+            new_spec[1] = colonist_str;
+            new_spec[2] = std::to_string(timeval);
+            new_spec[3] = "I";
             island_spec.push_back(new_spec);
         }
         else
