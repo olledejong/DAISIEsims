@@ -173,10 +173,10 @@ test_that("Test C++ DAISIE_rates; compare cpp rate outcomes to original rate out
             sea_level = 0
         )
 
-        testthat::expect_equal(rates_cpp$immig_rate, rates_r$immig_rate)
-        testthat::expect_equal(rates_cpp$ana_rate, rates_r$ana_rate)
-        testthat::expect_equal(rates_cpp$clado_rate, rates_r$clado_rate)
-        testthat::expect_equal(rates_cpp$ext_rate, rates_r$ext_rate)
+        expect_equal(rates_cpp$immig_rate, rates_r$immig_rate)
+        expect_equal(rates_cpp$ana_rate, rates_r$ana_rate)
+        expect_equal(rates_cpp$clado_rate, rates_r$clado_rate)
+        expect_equal(rates_cpp$ext_rate, rates_r$ext_rate)
     }
 
 
@@ -271,6 +271,6 @@ test_that("Microbenchmarking update_rates function", {
 
     res <- microbenchmark::microbenchmark(update_rates_cpp_version(), update_rates_r_version())
     print(res)
-    
+
     expect_true(mean(res$time[res$expr == "update_rates_cpp_version()"]) < mean(res$time[res$expr == "update_rates_r_version()"]))
 })

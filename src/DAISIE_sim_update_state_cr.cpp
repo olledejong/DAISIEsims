@@ -24,7 +24,6 @@
 //' @seealso \link{DAISIE_sim_core_cr},
 //' \link{DAISIE_sim_update_state_cr}
 //' @export
-// [[Rcpp::depends(DDD)]]
 // [[Rcpp::export]]
 Rcpp::List DAISIE_sim_update_state_cr_cpp(
     double timeval,
