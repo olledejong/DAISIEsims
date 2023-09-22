@@ -81,37 +81,8 @@ Rcpp::List DAISIE_sim_update_state_cr_cpp(
     else if (possible_event == 2)
     { // EXTINCTION
 
-        // create vector containing the ids of all species on island
-        std::vector<int> island_spec_ids(island_spec.size());
-        std::iota(island_spec_ids.begin(), island_spec_ids.end(), 1);
+        // TODO implement rest of extinction event -- see update_state_extinction branch
 
-        // from all species, pick one that will go extinct
-        std::vector<int> to_die = Rcpp::as<std::vector<int>>(sample2(island_spec_ids, 1));
-        int to_die_index = to_die[0];
-
-        std::string species_type = island_spec[to_die_index][3];
-
-        // remove immigrant or anagenetic
-        if (species_type == "I" || species_type == "A")
-        {
-            island_spec.erase(island_spec.begin() + to_die_index);
-        }
-
-        // remove cladogenetic
-        if (species_type == "C")
-        {
-            // find all indexes where
-            std::vector<int> sameInColOne = getRowIndexesForQuery(island_spec, 1, island_spec[to_die_index][1]);
-            std::vector<int> sameInColTwo = getRowIndexesForQuery(island_spec, 2, island_spec[to_die_index][2]);
-
-            std::vector<int> sisters = getIntersectData(sameInColOne, sameInColTwo);
-
-            // now we have the sister indexes
-
-            // get indexes of species that are != to_die_index
-        }
-
-        // TODO implement rest of extinction event
     }
     else if (possible_event == 3)
     { // ANAGENESIS
