@@ -53,9 +53,9 @@ Rcpp::List DAISIE_sim_update_state_cr_cpp(
         std::string colonist_str = std::to_string(colonist[0]);
 
         // check if colonist already there -- returns -1 when not present, and row index when present
-        int spec_row_index = getRowIndexForQuery(island_spec, 0, colonist_str);
+        std::vector<int> spec_row_indexes = getRowIndexesForQuery(island_spec, 0, colonist_str);
 
-        if (spec_row_index == -1)
+        if (spec_row_indexes.size() == 0)
         {
             // if colonist not yet on island
             // insert row into island_spec matrix
@@ -69,6 +69,7 @@ Rcpp::List DAISIE_sim_update_state_cr_cpp(
         else
         {
             // already present on island
+            int spec_row_index = spec_row_indexes[0];
             // replace row with updated row (new timeval etc)
             island_spec[spec_row_index][0] = colonist_str;
             island_spec[spec_row_index][1] = colonist_str;

@@ -24,7 +24,6 @@ Rcpp::List DAISIE_nonoceanic_spec_cpp(
     int prob_nonend,
     int mainland_n)
 {
-    // Make accessable for List creation
     int init_nonend_spec = 0;
     int init_end_spec = 0;
     std::vector<int> init_nonend_spec_vec{0};

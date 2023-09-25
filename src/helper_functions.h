@@ -7,26 +7,8 @@
 
 #include <Rcpp.h>
 
-//' Retrieves row indexes where
-inline int getRowIndexForQuery(
-    std::vector<std::vector<std::string>> mat,
-    int col_of_interest,
-    std::string query)
-{
-    int rowIndex = -1;
-    for (int i = 0; i < mat.size(); ++i)
-    {
-        std::vector<std::string> row = mat[i];
-        if (row[col_of_interest] == query)
-        {
-            rowIndex = i;
-            break;
-        }
-    }
-    return rowIndex;
-}
-
-//' Retrieves row indexes where
+//' Retrieves the indexes of the rows that hold a specific value
+//' in a specified column
 inline std::vector<int> getRowIndexesForQuery(
     std::vector<std::vector<std::string>> mat,
     int col_of_interest,
@@ -44,7 +26,8 @@ inline std::vector<int> getRowIndexesForQuery(
     return rowIndexes;
 }
 
-// function that translates c++ integer vector to R
+//' Takes an integer vector and translates this to a Rcpp::IntegerVector
+//' object so that it can be returned to R
 inline Rcpp::IntegerVector getIntVecR(
     std::vector<int> cppVec)
 {
@@ -56,7 +39,8 @@ inline Rcpp::IntegerVector getIntVecR(
     return rVec;
 }
 
-// function that translates c++ string matrix to R an matrix
+//' Takes a vector of vectors object (type string) and converts this
+//' into the R equivalent (Rcpp::StringMatrix)
 inline Rcpp::StringMatrix getStrMatrixR(
     std::vector<std::vector<std::string>> cppMat)
 {
@@ -80,17 +64,13 @@ inline Rcpp::StringMatrix getStrMatrixR(
     return rMat;
 }
 
-// TODO make type flexible
+//' Takes a vector of vectors object (type double) and converts this
+//' into the R equivalent (Rcpp::NumericMatrix)
 inline Rcpp::NumericMatrix getNumericMatrixR(
     std::vector<std::vector<double>> cppMat)
 {
     int numRows = cppMat.size();
     int numCols = cppMat[0].size();
-
-    if (numRows == 0 && numCols == 0)
-    {
-        return R_NilValue;
-    }
 
     Rcpp::NumericMatrix rMat(numRows, numCols);
 
@@ -104,7 +84,8 @@ inline Rcpp::NumericMatrix getNumericMatrixR(
     return rMat;
 }
 
-// function that translates c++ string matrix to R an matrix
+//' Takes a Rcpp::StringMatrix object and and converts this to the C++
+//' equivalent (a vector of vectors of type string)
 inline std::vector<std::vector<std::string>> getStrMatrixCpp(
     Rcpp::StringMatrix rMat)
 {
@@ -124,6 +105,8 @@ inline std::vector<std::vector<std::string>> getStrMatrixCpp(
     return cppMat;
 }
 
+//' Takes a Rcpp::NumericMatrix object and and converts this to the C++
+//' equivalent (a vector of vectors of type double)
 inline std::vector<std::vector<double>> getDoubleMatrixCpp(
     Rcpp::NumericMatrix rMat)
 {
@@ -140,24 +123,6 @@ inline std::vector<std::vector<double>> getDoubleMatrixCpp(
         }
     }
     return cppMat;
-}
-
-//' Finds the integers that are present in both vectors
-inline std::vector<int> getIntersectData(
-    std::vector<int> vec1,
-    std::vector<int> vec2)
-{
-    std::sort(vec1.begin(), vec1.end());
-    std::sort(vec2.begin(), vec2.end());
-
-    std::vector<int> common_data(vec1.size() + vec2.size());
-    std::vector<int>::iterator it, st;
-    it = std::set_intersection(vec1.begin(),
-                               vec1.end(),
-                               vec2.begin(),
-                               vec2.end(),
-                               common_data.begin());
-    return common_data;
 }
 
 #endif // __HELPER_FUNCTIONS__
